@@ -1,5 +1,5 @@
 const statusCodes = {
-  clientError: { notFound: 400, badRequest: 400, unauthorized: 401 },
+  clientError: { notFound: 400, badRequest: 400, unauthorized: 401, gone: 401 },
   serverError: {
     internalServer: 500,
   },

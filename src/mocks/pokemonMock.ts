@@ -1,6 +1,6 @@
 import { type PokemonStructure } from "../server/types";
 
-export const pokemonMock: PokemonStructure = {
+export const mockPokemon: PokemonStructure = {
   id: "1",
   name: "Pokamion",
   types: ["Pesao"],

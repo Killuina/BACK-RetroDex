@@ -3,7 +3,7 @@ import request from "supertest";
 import mongoose from "mongoose";
 import { app } from "../..";
 import connectDatabase from "../../../database/connectDatabase";
-import { pokemonMock } from "../../../mocks/pokemonMock";
+import { mockPokemon } from "../../../mocks/pokemonMock";
 import { paths } from "../../paths/paths";
 import statusCodes from "../../utils/statusCodes";
 import UserPokemon from "../../../database/models/UserPokemon";
@@ -24,7 +24,7 @@ beforeAll(async () => {
   const mongodbServerUrl = mongodbServer.getUri();
 
   await connectDatabase(mongodbServerUrl);
-  await UserPokemon.create(pokemonMock);
+  await UserPokemon.create(mockPokemon);
 });
 
 afterAll(async () => {
