@@ -1,4 +1,5 @@
 import { type NextFunction, type Request, type Response } from "express";
+import mongoose from "mongoose";
 import { CustomError } from "../../../CustomError/CustomError.js";
 import UserPokemon from "../../../database/models/UserPokemon.js";
 import Pokemon from "../../../database/models/UserPokemon.js";
@@ -7,6 +8,7 @@ import statusCodes from "../../utils/statusCodes.js";
 const {
   success: { okCode },
   serverError: { internalServer },
+  clientError: { badRequest },
 } = statusCodes;
 
 export const getUserPokemon = async (
@@ -41,20 +43,31 @@ export const deleteUserPokemonById = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { id: userPokemonId } = req.params;
+  const { userPokemonId } = req.params;
 
   try {
-    await UserPokemon.findByIdAndDelete({ _id: userPokemonId }).exec();
-    res
-      .status(okCode)
-      .json({ message: `Pokémon with id: ${userPokemonId} deleted` });
-  } catch (error: unknown) {
-    const deleteUserPokemonError = new CustomError(
-      (error as Error).message,
-      internalServer,
-      "Error deleting pokémon"
-    );
+    if (!mongoose.Types.ObjectId.isValid(userPokemonId)) {
+      throw new CustomError(
+        "Invalid id",
+        badRequest,
+        "Please enter a valid Id"
+      );
+    }
 
-    next(deleteUserPokemonError);
+    const deletedPokemon = await UserPokemon.findByIdAndDelete(
+      userPokemonId
+    ).exec();
+
+    if (!deletedPokemon) {
+      throw new CustomError(
+        "The pokémon doesn't exist on the database",
+        internalServer,
+        "Error deleting pokémon"
+      );
+    }
+
+    res.status(okCode).json({ message: `${deletedPokemon.name} deleted` });
+  } catch (error: unknown) {
+    next(error);
   }
 };

@@ -66,23 +66,23 @@ describe("Given the pokemon controller", () => {
 
 describe("Given the deleteUserPokemonById controller", () => {
   const expectedResponseBody = {
-    message: `Pokémon with id: ${mockPokemon.id} deleted`,
+    message: `${mockPokemon.name} deleted`,
   };
   const res: Partial<Response> = {
     status: jest.fn().mockReturnThis(),
-    json: jest.fn().mockReturnValue({
-      message: `Pokémon with id: ${mockPokemon.id} deleted`,
-    }),
+    json: jest.fn(),
   };
   const req: Partial<Request> = {
-    params: { id: `${mockPokemon.id}` },
+    params: { userPokemonId: mockPokemon.id },
   };
   const next: NextFunction = jest.fn();
 
-  describe("When it receives a request to delete a pokemon", () => {
+  describe("When it receives a request to delete 'Pokamion'", () => {
     test("Then it should call its status method with 200", async () => {
+      mongoose.Types.ObjectId.isValid = () => true;
+
       UserPokemon.findByIdAndDelete = jest.fn().mockImplementationOnce(() => ({
-        exec: jest.fn(),
+        exec: jest.fn().mockResolvedValue(mockPokemon),
       }));
 
       await deleteUserPokemonById(req as Request, res as Response, next);
@@ -90,9 +90,9 @@ describe("Given the deleteUserPokemonById controller", () => {
       expect(res.status).toHaveBeenCalledWith(okCode);
     });
 
-    test("Then it should call its status method with 200", async () => {
+    test("Then it should call its json method with message: 'Pokamion deleted'", async () => {
       UserPokemon.findByIdAndDelete = jest.fn().mockImplementationOnce(() => ({
-        exec: jest.fn(),
+        exec: jest.fn().mockResolvedValue(mockPokemon),
       }));
 
       await deleteUserPokemonById(req as Request, res as Response, next);
@@ -105,6 +105,8 @@ describe("Given the deleteUserPokemonById controller", () => {
     test("Then it should call the received next function with the created error", async () => {
       const error = new Error("Error deleting Pokémon");
 
+      mongoose.Types.ObjectId.isValid = () => true;
+
       UserPokemon.findByIdAndDelete = jest.fn().mockImplementationOnce(() => ({
         exec: jest.fn().mockRejectedValue(error),
       }));
@@ -112,6 +114,20 @@ describe("Given the deleteUserPokemonById controller", () => {
       await deleteUserPokemonById(req as Request, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(error);
+    });
+  });
+
+  describe("When it receives an invalid id", () => {
+    test("Then it should call next function with an error with message 'Please enter a valid Id'", async () => {
+      const expectedErrorMessage = "Please enter a valid Id";
+
+      mongoose.Types.ObjectId.isValid = () => false;
+
+      await deleteUserPokemonById(req as Request, res as Response, next);
+
+      expect(next).toHaveBeenCalledWith(
+        expect.objectContaining({ publicMessage: expectedErrorMessage })
+      );
     });
   });
 });
