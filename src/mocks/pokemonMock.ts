@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import { type PokemonStructure } from "../server/types";
 
 export const mockPokemon: PokemonStructure = {

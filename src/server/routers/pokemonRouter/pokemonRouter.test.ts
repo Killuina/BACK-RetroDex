@@ -9,10 +9,14 @@ import statusCodes from "../../utils/statusCodes";
 import UserPokemon from "../../../database/models/UserPokemon";
 
 const {
-  pokemon: { pokemonPath },
+  pokemon: {
+    pokemonPath,
+    endpoints: { deleteUserPokemon },
+  },
 } = paths;
 
 const {
+  clientError: { badRequest },
   success: { okCode },
   serverError: { internalServer },
 } = statusCodes;
@@ -62,6 +66,55 @@ describe("Given the GET /pokemon endpoint", () => {
         .expect(internalServer);
 
       expect(response.body).toStrictEqual(expectedErrorMessage);
+    });
+  });
+});
+
+describe("Given the DELETE /pokemon/:userPokemonId endpoint", () => {
+  describe("When it receives a request to delete 'Pokamion'", () => {
+    test("Then it should respond with okCode and message: 'Pokamion' deleted", async () => {
+      const { _id: id } = await UserPokemon.create(mockPokemon);
+
+      const deletePokamionEndpoint = `/pokemon/delete/${id.toString()}`;
+
+      const response = await request(app)
+        .delete(deletePokamionEndpoint)
+        .expect(okCode);
+
+      expect(response.body).toHaveProperty(
+        "message",
+        `${mockPokemon.name} deleted`
+      );
+    });
+
+    describe("When it receives a request to delete a pokémon that doesn't exists", () => {
+      test("Then it should respond with internalServer code and message: 'Error deleting pokémon'", async () => {
+        const expectedErrorMessage = "Error deleting pokémon";
+        const nonExistingPokemonId = "640f22f29ef06cb2185232e3";
+
+        const deleteNonExistingPokemonEndpoint = `/pokemon/delete/${nonExistingPokemonId}`;
+
+        const response = await request(app)
+          .delete(deleteNonExistingPokemonEndpoint)
+          .expect(internalServer);
+
+        expect(response.body).toHaveProperty("error", expectedErrorMessage);
+      });
+    });
+
+    describe("When it receives a request with an invalid id", () => {
+      test("Then it should respond with badRequest code and message 'Please enter a valid Id'", async () => {
+        const expectedErrorMessage = "Please enter a valid Id";
+        const invalidPokemonId = "123";
+
+        const deleteinvalidIdPokemonEndpoint = `/pokemon/delete/${invalidPokemonId}`;
+
+        const response = await request(app)
+          .delete(deleteinvalidIdPokemonEndpoint)
+          .expect(badRequest);
+
+        expect(response.body).toHaveProperty("error", expectedErrorMessage);
+      });
     });
   });
 });
