@@ -41,11 +41,10 @@ export const deleteUserPokemonById = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { userPokemonId } = req.params;
+  const { id: userPokemonId } = req.params;
 
   try {
     await UserPokemon.findByIdAndDelete({ _id: userPokemonId }).exec();
-
     res
       .status(okCode)
       .json({ message: `Pokémon with id: ${userPokemonId} deleted` });
