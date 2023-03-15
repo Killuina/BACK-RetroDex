@@ -1,5 +1,6 @@
 import { type NextFunction, type Request, type Response } from "express";
 import { CustomError } from "../../../CustomError/CustomError.js";
+import UserPokemon from "../../../database/models/UserPokemon.js";
 import Pokemon from "../../../database/models/UserPokemon.js";
 import statusCodes from "../../utils/statusCodes.js";
 
@@ -8,7 +9,11 @@ const {
   serverError: { internalServer },
 } = statusCodes;
 
-const getPokemon = async (req: Request, res: Response, next: NextFunction) => {
+export const getUserPokemon = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const pokemon = await Pokemon.find().exec();
     if (pokemon.length === 0) {
@@ -31,4 +36,26 @@ const getPokemon = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default getPokemon;
+export const deleteUserPokemonById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { userPokemonId } = req.params;
+
+  try {
+    await UserPokemon.findByIdAndDelete({ _id: userPokemonId }).exec();
+
+    res
+      .status(okCode)
+      .json({ message: `Pokémon with id: ${userPokemonId} deleted` });
+  } catch (error: unknown) {
+    const deleteUserPokemonError = new CustomError(
+      (error as Error).message,
+      internalServer,
+      "Error deleting pokémon"
+    );
+
+    next(deleteUserPokemonError);
+  }
+};
