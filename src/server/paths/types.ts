@@ -7,5 +7,6 @@ export interface Paths {
   };
   pokemon: {
     pokemonPath: string;
+    endpoints: { deleteUserPokemon: string };
   };
 }

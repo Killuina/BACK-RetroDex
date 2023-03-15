@@ -7,7 +7,9 @@ export const paths: Paths = {
       login: "/login",
     },
   },
+
   pokemon: {
     pokemonPath: "/pokemon",
+    endpoints: { deleteUserPokemon: "/delete/:userPokemonId" },
   },
 };

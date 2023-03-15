@@ -1,7 +1,8 @@
+import mongoose from "mongoose";
 import { type PokemonStructure } from "../server/types";
 
 export const mockPokemon: PokemonStructure = {
-  id: "1",
+  id: "640f22f29ef06cb2185232e3",
   name: "Pokamion",
   types: ["Pesao"],
   ability: "Pesao",
