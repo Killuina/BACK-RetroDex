@@ -102,18 +102,20 @@ describe("Given the deleteUserPokemonById controller", () => {
   });
 
   describe("When it receives a request and the deleting process fails", () => {
-    test("Then it should call the received next function with the created error", async () => {
-      const error = new Error("Error deleting Pokémon");
+    test("Then it should call the received next function with message 'Error deleting pokemon'", async () => {
+      const expectedErrorMessage = "Error deleting pokémon";
 
       mongoose.Types.ObjectId.isValid = () => true;
 
       UserPokemon.findByIdAndDelete = jest.fn().mockImplementationOnce(() => ({
-        exec: jest.fn().mockRejectedValue(error),
+        exec: jest.fn().mockResolvedValue(null),
       }));
 
       await deleteUserPokemonById(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith(error);
+      expect(next).toHaveBeenCalledWith(
+        expect.objectContaining({ publicMessage: expectedErrorMessage })
+      );
     });
   });
 
