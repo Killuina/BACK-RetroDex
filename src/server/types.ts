@@ -1,3 +1,5 @@
+import { type Request } from "express";
+
 export interface UserLoginCredentials {
   password: string;
   username: string;
@@ -16,4 +18,11 @@ export interface PokemonStructure {
   weight: number;
   baseExp: number;
   imageUrl: string;
+}
+
+export interface UserId {
+  id: string;
+}
+export interface CustomRequest extends Request {
+  userId: string;
 }
