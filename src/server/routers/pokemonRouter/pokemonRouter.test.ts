@@ -1,5 +1,4 @@
 import { MongoMemoryServer } from "mongodb-memory-server";
-import jwt from "jsonwebtoken";
 import request from "supertest";
 import mongoose from "mongoose";
 import { app } from "../..";
@@ -10,10 +9,7 @@ import statusCodes from "../../utils/statusCodes";
 import UserPokemon from "../../../database/models/UserPokemon";
 
 const {
-  pokemon: {
-    pokemonPath,
-    endpoints: { deleteUserPokemon },
-  },
+  pokemon: { pokemonPath },
 } = paths;
 
 const {
