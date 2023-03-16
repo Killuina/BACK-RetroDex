@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
 import { type Response, type NextFunction } from "express";
 import { type UserId, type CustomRequest } from "../../types";
-import { CustomError } from "../../../CustomError/CustomError";
-import statusCodes from "../../utils/statusCodes";
+import { CustomError } from "../../../CustomError/CustomError.js";
+import statusCodes from "../../utils/statusCodes.js";
 
 const {
   clientError: { forbbiden },
@@ -23,7 +23,6 @@ const auth = (req: CustomRequest, res: Response, next: NextFunction) => {
     const token = authorizationHeader.replace(/^Bearer\s*/, "");
 
     const { id } = jwt.verify(token, process.env.JWT_SECRET!) as UserId;
-
     req.userId = id;
 
     next();
@@ -31,7 +30,7 @@ const auth = (req: CustomRequest, res: Response, next: NextFunction) => {
     const authError = new CustomError(
       (error as Error).message,
       forbbiden,
-      "Invalid token"
+      "Action not allowed"
     );
 
     next(authError);

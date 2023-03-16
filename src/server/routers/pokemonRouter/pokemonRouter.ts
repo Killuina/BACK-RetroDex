@@ -3,6 +3,7 @@ import {
   deleteUserPokemonById,
   getUserPokemon,
 } from "../../controllers/pokemonControllers/pokemonControllers.js";
+import auth from "../../middlewares/auth/auth.js";
 import { paths } from "../../paths/paths.js";
 
 const {
@@ -14,4 +15,4 @@ const {
 export const pokemonRouter = Router();
 
 pokemonRouter.get("/", getUserPokemon);
-pokemonRouter.delete(deleteUserPokemon, deleteUserPokemonById);
+pokemonRouter.delete(deleteUserPokemon, auth, deleteUserPokemonById);

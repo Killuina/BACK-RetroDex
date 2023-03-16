@@ -1,4 +1,4 @@
-import { type NextFunction, type Response } from "express";
+import { type Response } from "express";
 import jwt from "jsonwebtoken";
 import { type CustomRequest, type UserId } from "../../types";
 import auth from "./auth";

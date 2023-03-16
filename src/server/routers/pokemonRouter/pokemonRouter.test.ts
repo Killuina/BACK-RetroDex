@@ -1,4 +1,5 @@
 import { MongoMemoryServer } from "mongodb-memory-server";
+import jwt from "jsonwebtoken";
 import request from "supertest";
 import mongoose from "mongoose";
 import { app } from "../..";
@@ -16,7 +17,7 @@ const {
 } = paths;
 
 const {
-  clientError: { badRequest },
+  clientError: { badRequest, forbbiden },
   success: { okCode },
   serverError: { internalServer },
 } = statusCodes;
@@ -41,7 +42,7 @@ afterEach(async () => {
 });
 
 describe("Given the GET /pokemon endpoint", () => {
-  describe("When it receives a request and there is one Pokemon on the database", () => {
+  describe("When it receives a request with authorization header and there is one Pokemon on the database", () => {
     test("Then it should respond with okCode and the requested list of Pokemon", async () => {
       const expectedListLength = 1;
       const response = await request(app).get(pokemonPath).expect(okCode);
@@ -71,14 +72,20 @@ describe("Given the GET /pokemon endpoint", () => {
 });
 
 describe("Given the DELETE /pokemon/:userPokemonId endpoint", () => {
+  const authorizationHeader =
+    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2ZhMTEzY2RhNTJkZmYyOGIyNjFlMGEiLCJ1c2VybmFtZSI6Ik1hbm9sbyIsImlhdCI6MTY3ODk2MDQwNCwiZXhwIjoxNjc5MTMzMjA0fQ.prAU5548v73Ghpgen-IrEEFY4UbIMA0xJ2kPkGDEyyc";
+  const noBearerAuthorizationHeader =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2ZhMTEzY2RhNTJkZmYyOGIyNjFlMGEiLCJ1c2VybmFtZSI6Ik1hbm9sbyIsImlhdCI6MTY3ODk2MDQwNCwiZXhwIjoxNjc5MTMzMjA0fQ.prAU5548v73Ghpgen-IrEEFY4UbIMA0xJ2kPkGDEyyc";
+
   describe("When it receives a request to delete 'Pokamion'", () => {
     test("Then it should respond with okCode and message: 'Pokamion' deleted", async () => {
       const { _id: id } = await UserPokemon.create(mockPokemon);
 
-      const deletePokamionEndpoint = `/pokemon/delete/${id.toString()}`;
+      const deletePokamionEndpoint = `${pokemonPath}/delete/${id.toString()}`;
 
       const response = await request(app)
         .delete(deletePokamionEndpoint)
+        .set("Authorization", authorizationHeader)
         .expect(okCode);
 
       expect(response.body).toHaveProperty(
@@ -92,10 +99,11 @@ describe("Given the DELETE /pokemon/:userPokemonId endpoint", () => {
         const expectedErrorMessage = "Error deleting pokémon";
         const nonExistingPokemonId = "640f22f29ef06cb2185232e3";
 
-        const deleteNonExistingPokemonEndpoint = `/pokemon/delete/${nonExistingPokemonId}`;
+        const deleteNonExistingPokemonEndpoint = `${pokemonPath}/delete/${nonExistingPokemonId}`;
 
         const response = await request(app)
           .delete(deleteNonExistingPokemonEndpoint)
+          .set("Authorization", authorizationHeader)
           .expect(internalServer);
 
         expect(response.body).toHaveProperty("error", expectedErrorMessage);
@@ -111,9 +119,34 @@ describe("Given the DELETE /pokemon/:userPokemonId endpoint", () => {
 
         const response = await request(app)
           .delete(deleteinvalidIdPokemonEndpoint)
+          .set("Authorization", authorizationHeader)
           .expect(badRequest);
 
         expect(response.body).toHaveProperty("error", expectedErrorMessage);
+      });
+    });
+
+    const invalidTokenMessage = "Action not allowed";
+    const deleteMockPokemonEndpoint = `${pokemonPath}/delete/640f22f29ef06cb2185232e3`;
+
+    describe("When it receives a request without header Authorization", () => {
+      test("Then it should respond with error 'Invalid token'", async () => {
+        const response = await request(app)
+          .delete(deleteMockPokemonEndpoint)
+          .expect(forbbiden);
+
+        expect(response.body).toHaveProperty("error", invalidTokenMessage);
+      });
+    });
+
+    describe("When it receives a request with header Authorization without bearer", () => {
+      test("Then it should respond with error 'Invalid token'", async () => {
+        const response = await request(app)
+          .delete(deleteMockPokemonEndpoint)
+          .set("Authorization", noBearerAuthorizationHeader)
+          .expect(forbbiden);
+
+        expect(response.body).toHaveProperty("error", invalidTokenMessage);
       });
     });
   });
