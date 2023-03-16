@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { type NextFunction } from "express";
+import { type Response, type NextFunction } from "express";
 import { type UserId, type CustomRequest } from "../../types";
 import { CustomError } from "../../../CustomError/CustomError";
 import statusCodes from "../../utils/statusCodes";
@@ -25,6 +25,8 @@ const auth = (req: CustomRequest, res: Response, next: NextFunction) => {
     const { id } = jwt.verify(token, process.env.JWT_SECRET!) as UserId;
 
     req.userId = id;
+
+    next();
   } catch (error: unknown) {
     const authError = new CustomError(
       (error as Error).message,
