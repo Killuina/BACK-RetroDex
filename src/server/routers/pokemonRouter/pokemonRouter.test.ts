@@ -1,19 +1,16 @@
+import "../../../loadEnvironment";
 import { MongoMemoryServer } from "mongodb-memory-server";
-import jwt from "jsonwebtoken";
 import request from "supertest";
 import mongoose from "mongoose";
 import { app } from "../..";
 import connectDatabase from "../../../database/connectDatabase";
-import { mockPokemon } from "../../../mocks/pokemonMock";
+import { mockPokemon } from "../../../mocks/pokemonMocks";
 import { paths } from "../../paths/paths";
 import statusCodes from "../../utils/statusCodes";
 import UserPokemon from "../../../database/models/UserPokemon";
 
 const {
-  pokemon: {
-    pokemonPath,
-    endpoints: { deleteUserPokemon },
-  },
+  pokemon: { pokemonPath },
 } = paths;
 
 const {
@@ -22,11 +19,11 @@ const {
   serverError: { internalServer },
 } = statusCodes;
 
-let mongodbServer: MongoMemoryServer;
+let mockMongodbServer: MongoMemoryServer;
 
 beforeAll(async () => {
-  mongodbServer = await MongoMemoryServer.create();
-  const mongodbServerUrl = mongodbServer.getUri();
+  mockMongodbServer = await MongoMemoryServer.create();
+  const mongodbServerUrl = mockMongodbServer.getUri();
 
   await connectDatabase(mongodbServerUrl);
   await UserPokemon.create(mockPokemon);
@@ -34,7 +31,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await mongoose.connection.close();
-  await mongodbServer.stop();
+  await mockMongodbServer.stop();
 });
 
 afterEach(async () => {

@@ -27,6 +27,9 @@ const userPokemonSchema = new Schema({
     type: String,
     required: true,
   },
+  backupImageUrl: {
+    type: String,
+  },
 });
 
 const UserPokemon = model("UserPokemon", userPokemonSchema, "userPokemon");

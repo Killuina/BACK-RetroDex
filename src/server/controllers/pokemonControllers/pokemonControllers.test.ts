@@ -2,7 +2,7 @@ import { type NextFunction, type Request, type Response } from "express";
 import mongoose from "mongoose";
 import { CustomError } from "../../../CustomError/CustomError";
 import UserPokemon from "../../../database/models/UserPokemon";
-import { mockPokemon } from "../../../mocks/pokemonMock";
+import { mockPokemon } from "../../../mocks/pokemonMocks";
 import statusCodes from "../../utils/statusCodes";
 import { deleteUserPokemonById, getUserPokemon } from "./pokemonControllers";
 
