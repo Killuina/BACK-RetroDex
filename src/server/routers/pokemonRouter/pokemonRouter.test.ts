@@ -9,13 +9,19 @@ import { paths } from "../../paths/paths";
 import statusCodes from "../../utils/statusCodes";
 import UserPokemon from "../../../database/models/UserPokemon";
 
+const authorizationHeader =
+  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2ZhMTEzY2RhNTJkZmYyOGIyNjFlMGEiLCJ1c2VybmFtZSI6Ik1hbm9sbyIsImlhdCI6MTY3ODk2MDQwNCwiZXhwIjoxNjc5MTMzMjA0fQ.prAU5548v73Ghpgen-IrEEFY4UbIMA0xJ2kPkGDEyyc";
+
 const {
-  pokemon: { pokemonPath },
+  pokemon: {
+    pokemonPath,
+    endpoints: { createPokemon },
+  },
 } = paths;
 
 const {
   clientError: { badRequest, forbbiden },
-  success: { okCode },
+  success: { okCode, resourceCreated },
   serverError: { internalServer },
 } = statusCodes;
 
@@ -69,8 +75,6 @@ describe("Given the GET /pokemon endpoint", () => {
 });
 
 describe("Given the DELETE /pokemon/:userPokemonId endpoint", () => {
-  const authorizationHeader =
-    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2ZhMTEzY2RhNTJkZmYyOGIyNjFlMGEiLCJ1c2VybmFtZSI6Ik1hbm9sbyIsImlhdCI6MTY3ODk2MDQwNCwiZXhwIjoxNjc5MTMzMjA0fQ.prAU5548v73Ghpgen-IrEEFY4UbIMA0xJ2kPkGDEyyc";
   const noBearerAuthorizationHeader =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2ZhMTEzY2RhNTJkZmYyOGIyNjFlMGEiLCJ1c2VybmFtZSI6Ik1hbm9sbyIsImlhdCI6MTY3ODk2MDQwNCwiZXhwIjoxNjc5MTMzMjA0fQ.prAU5548v73Ghpgen-IrEEFY4UbIMA0xJ2kPkGDEyyc";
 
@@ -145,6 +149,29 @@ describe("Given the DELETE /pokemon/:userPokemonId endpoint", () => {
 
         expect(response.body).toHaveProperty("error", invalidTokenMessage);
       });
+    });
+  });
+});
+
+describe("Given a POST /games/create endpoint", () => {
+  describe("When it receives a request with all needed data to create a Pokemon named 'Pokamion", () => {
+    test("Then it should respond with status method 201 and message: 'Pokamion created!'", async () => {
+      const expectedMessage = "Pokamion created";
+
+      const response = await request(app)
+        .post(`${pokemonPath}${createPokemon}`)
+        .set("Authorization", authorizationHeader)
+        .field("name", mockUserPokemon.name)
+        .field("ability", mockUserPokemon.ability)
+        .field("firstType", mockUserPokemon.types[0])
+        .field("secondType", mockUserPokemon.types[1])
+        .field("height", mockUserPokemon.height)
+        .field("weight", mockUserPokemon.weight)
+        .field("baseExp", mockUserPokemon.baseExp)
+        .attach("image", "testMedia/test.png")
+        .expect(resourceCreated);
+
+      expect(response.body).toHaveProperty("message", expectedMessage);
     });
   });
 });

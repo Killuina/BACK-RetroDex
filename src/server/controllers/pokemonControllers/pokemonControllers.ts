@@ -4,7 +4,7 @@ import { CustomError } from "../../../CustomError/CustomError.js";
 import UserPokemon, {
   type UserPokemonSchemaStructure,
 } from "../../../database/models/UserPokemon.js";
-import { type CustomRequest } from "../../types.js";
+import { type UserPokemonData, type CustomRequest } from "../../types.js";
 import statusCodes from "../../utils/statusCodes.js";
 
 const {
@@ -80,12 +80,12 @@ export const createUserPokemon = async (
   next: NextFunction
 ) => {
   try {
-    const userPokemon = req.body as UserPokemonSchemaStructure;
-
+    const userPokemon = req.body as UserPokemonData;
     const { userId } = req;
 
     await UserPokemon.create({
       ...userPokemon,
+      types: [userPokemon.firstType, userPokemon.secondType],
       createdBy: userId,
     });
 

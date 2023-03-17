@@ -5,6 +5,7 @@ const userPokemonSchema = new Schema({
     type: String,
     required: true,
     maxLength: 12,
+    unique: true,
   },
   types: { type: [String], required: true },
   ability: {

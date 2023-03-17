@@ -1,8 +1,9 @@
 import jwt from "jsonwebtoken";
 import { type Response, type NextFunction } from "express";
-import { type UserId, type CustomRequest } from "../../types";
+import { type CustomRequest } from "../../types";
 import { CustomError } from "../../../CustomError/CustomError.js";
 import statusCodes from "../../utils/statusCodes.js";
+import { type CustomJwtPayload } from "../../controllers/userControllers/types";
 
 const {
   clientError: { forbbiden },
@@ -21,8 +22,10 @@ const auth = (req: CustomRequest, res: Response, next: NextFunction) => {
     }
 
     const token = authorizationHeader.replace(/^Bearer\s*/, "");
-
-    const { id } = jwt.verify(token, process.env.JWT_SECRET!) as UserId;
+    const { sub: id } = jwt.verify(
+      token,
+      process.env.JWT_SECRET!
+    ) as CustomJwtPayload;
     req.userId = id;
 
     next();

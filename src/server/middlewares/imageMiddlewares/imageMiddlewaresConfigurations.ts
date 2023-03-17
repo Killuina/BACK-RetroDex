@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import multer from "multer";
 import path from "path";
+import sharp from "sharp";
 import {
   supabaseBucket,
   supabaseKey,
@@ -12,7 +13,7 @@ const destinationPath = "uploads/";
 export const storage = multer.diskStorage({
   destination: destinationPath,
   filename(req, file, setFilename) {
-    const uniquePrefix = crypto.randomUUID();
+    const uniquePrefix = Date.now();
     const extension = path.extname(file.originalname);
 
     setFilename(null, `${uniquePrefix}-${file.fieldname}${extension}`);

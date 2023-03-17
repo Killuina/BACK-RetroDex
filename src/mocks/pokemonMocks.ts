@@ -1,9 +1,12 @@
-import { type PokemonData, type UserPokemonStructure } from "../server/types";
+import {
+  type UserPokemonData,
+  type UserPokemonStructure,
+} from "../server/types";
 
 export const mockUserPokemon: UserPokemonStructure = {
   id: "640f22f29ef06cb2185232e3",
   name: "Pokamion",
-  types: ["Pesao"],
+  types: ["Pesao", "MuPesao"],
   ability: "Pesao",
   height: 0,
   weight: 0,
@@ -14,10 +17,11 @@ export const mockUserPokemon: UserPokemonStructure = {
   createdBy: "63fa113cda52dff29b261e0a",
 };
 
-export const mockPokemonData: PokemonData = {
+export const mockPokemonData: UserPokemonData = {
   id: "640f22f29ef06cb2185232e3",
   name: "Pokamion",
-  types: ["Pesao"],
+  firstType: "Pesao",
+  secondType: "Pesao",
   ability: "Pesao",
   height: 0,
   weight: 0,
