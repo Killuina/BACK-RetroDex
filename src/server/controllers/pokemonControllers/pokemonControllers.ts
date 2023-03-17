@@ -81,6 +81,7 @@ export const createUserPokemon = async (
 ) => {
   try {
     const userPokemon = req.body as UserPokemonSchemaStructure;
+
     const { userId } = req;
 
     await UserPokemon.create({
