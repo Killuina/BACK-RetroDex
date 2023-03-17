@@ -1,13 +1,13 @@
+import "../../../loadEnvironment";
 import path from "path";
 import fs from "fs/promises";
-import { createClient } from "@supabase/supabase-js";
 import { type NextFunction, type Response } from "express";
 import { type CustomRequest } from "../../types";
-import { supabaseId, supabaseKey, supabaseUrl } from "../../../loadEnvironment";
+import { bucket, upload } from "./imageMiddlewaresConfigurations";
 
-const supabase = createClient(supabaseUrl!, supabaseKey!);
+export const uploadImage = upload.single("image");
 
-const supabaseBackUp = async (
+export const backupImage = async (
   req: CustomRequest,
   res: Response,
   next: NextFunction
@@ -19,13 +19,11 @@ const supabaseBackUp = async (
 
     const backupPokemonImage = await fs.readFile(pokemonImageUrl);
 
-    await supabase.storage
-      .from(supabaseId!)
-      .upload(pokemonImage!, backupPokemonImage);
+    await bucket.upload(pokemonImage!, backupPokemonImage);
 
     const {
       data: { publicUrl },
-    } = supabase.storage.from(supabaseId!).getPublicUrl(pokemonImage!);
+    } = bucket.getPublicUrl(pokemonImage!);
 
     req.body.imageUrl = pokemonImageUrl;
     req.body.backupImageUrl = publicUrl;
@@ -35,5 +33,3 @@ const supabaseBackUp = async (
     next(error);
   }
 };
-
-export default supabaseBackUp;

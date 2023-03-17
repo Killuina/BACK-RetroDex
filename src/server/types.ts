@@ -20,6 +20,11 @@ export interface PokemonStructure {
   imageUrl: string;
 }
 
+export type PokemonData = Pick<
+  PokemonStructure,
+  "id" | "name" | "types" | "ability" | "height" | "weight" | "baseExp"
+>;
+
 export interface UserId {
   id: string;
 }

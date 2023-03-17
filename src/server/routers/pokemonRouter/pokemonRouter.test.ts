@@ -3,7 +3,7 @@ import request from "supertest";
 import mongoose from "mongoose";
 import { app } from "../..";
 import connectDatabase from "../../../database/connectDatabase";
-import { mockPokemon } from "../../../mocks/pokemonMock";
+import { mockPokemon } from "../../../mocks/pokemonMocks";
 import { paths } from "../../paths/paths";
 import statusCodes from "../../utils/statusCodes";
 import UserPokemon from "../../../database/models/UserPokemon";
