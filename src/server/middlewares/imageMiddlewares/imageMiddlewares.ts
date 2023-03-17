@@ -14,7 +14,7 @@ const {
 
 export const uploadImage = upload.single("image");
 
-export const optimizedImage = async (
+export const optimizeImage = async (
   req: CustomRequest,
   res: Response,
   next: NextFunction
@@ -29,7 +29,7 @@ export const optimizedImage = async (
 
   try {
     await sharp(path.join("uploads", pokemonImageName!))
-      .resize(350, 200, { fit: "cover" })
+      .resize(120, 120, { fit: "cover" })
       .webp({ quality: 100 })
       .toFile(path.join("uploads", `${basePath}.webp`));
 
