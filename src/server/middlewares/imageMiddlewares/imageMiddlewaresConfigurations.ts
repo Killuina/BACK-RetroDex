@@ -1,7 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import multer from "multer";
 import path from "path";
-import sharp from "sharp";
 import {
   supabaseBucket,
   supabaseKey,

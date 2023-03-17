@@ -11,6 +11,7 @@ import {
   uploadImage,
 } from "../../middlewares/imageMiddlewares/imageMiddlewares.js";
 import { paths } from "../../paths/paths.js";
+import createUserPokemonValidation from "../../schemas/createUserPokemon.js";
 
 const {
   pokemon: {
@@ -26,6 +27,7 @@ pokemonRouter.post(
   createPokemon,
   auth,
   uploadImage,
+  createUserPokemonValidation,
   optimizeImage,
   backupImage,
   createUserPokemon

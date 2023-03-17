@@ -1,9 +1,7 @@
 import { type NextFunction, type Request, type Response } from "express";
 import mongoose from "mongoose";
 import { CustomError } from "../../../CustomError/CustomError.js";
-import UserPokemon, {
-  type UserPokemonSchemaStructure,
-} from "../../../database/models/UserPokemon.js";
+import UserPokemon from "../../../database/models/UserPokemon.js";
 import { type UserPokemonData, type CustomRequest } from "../../types.js";
 import statusCodes from "../../utils/statusCodes.js";
 

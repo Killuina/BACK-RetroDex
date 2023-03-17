@@ -155,7 +155,7 @@ describe("Given the DELETE /pokemon/:userPokemonId endpoint", () => {
 
 describe("Given a POST /games/create endpoint", () => {
   describe("When it receives a request with all needed data to create a Pokemon named 'Pokamion", () => {
-    test("Then it should respond with status method 201 and message: 'Pokamion created!'", async () => {
+    test("Then it should respond with resource created status code and message: 'Pokamion created!'", async () => {
       const expectedMessage = "Pokamion created";
 
       const response = await request(app)
@@ -172,6 +172,26 @@ describe("Given a POST /games/create endpoint", () => {
         .expect(resourceCreated);
 
       expect(response.body).toHaveProperty("message", expectedMessage);
+    });
+  });
+
+  describe("When it receives a request with no name field", () => {
+    test("Then it should respond with status 400 and message: 'Pokamion created!'", async () => {
+      const expectedError = "Validation Failed";
+
+      const response = await request(app)
+        .post(`${pokemonPath}${createPokemon}`)
+        .set("Authorization", authorizationHeader)
+        .field("ability", mockUserPokemon.ability)
+        .field("firstType", mockUserPokemon.types[0])
+        .field("secondType", mockUserPokemon.types[1])
+        .field("height", mockUserPokemon.height)
+        .field("weight", mockUserPokemon.weight)
+        .field("baseExp", mockUserPokemon.baseExp)
+        .attach("image", "testMedia/test.png")
+        .expect(badRequest);
+
+      expect(response.body).toHaveProperty("error", expectedError);
     });
   });
 });
