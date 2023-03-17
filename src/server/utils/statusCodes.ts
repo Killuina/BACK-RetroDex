@@ -9,7 +9,7 @@ interface StatusCodes {
   serverError: {
     internalServer: number;
   };
-  success: { okCode: number };
+  success: { okCode: number; resourceCreated: number };
 }
 
 const statusCodes: StatusCodes = {
@@ -23,7 +23,7 @@ const statusCodes: StatusCodes = {
   serverError: {
     internalServer: 500,
   },
-  success: { okCode: 200 },
+  success: { okCode: 200, resourceCreated: 201 },
 };
 
 export default statusCodes;

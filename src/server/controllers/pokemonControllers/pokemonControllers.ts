@@ -8,7 +8,7 @@ import { type CustomRequest } from "../../types.js";
 import statusCodes from "../../utils/statusCodes.js";
 
 const {
-  success: { okCode },
+  success: { okCode, resourceCreated },
   serverError: { internalServer },
   clientError: { badRequest },
 } = statusCodes;
@@ -79,8 +79,25 @@ export const createUserPokemon = async (
   res: Response,
   next: NextFunction
 ) => {
-  const userPokemon = req.body as UserPokemonSchemaStructure;
-  const { userId } = req;
+  try {
+    const userPokemon = req.body as UserPokemonSchemaStructure;
+    const { userId } = req;
 
-  await UserPokemon.create({ ...userPokemon, createdBy: userId });
+    await UserPokemon.create({
+      ...userPokemon,
+      createdBy: userId,
+    });
+
+    res
+      .status(resourceCreated)
+      .json({ message: `${userPokemon.name} created` });
+  } catch (error: unknown) {
+    const creatingPokemonError = new CustomError(
+      (error as Error).message,
+      internalServer,
+      "Error creating Pokémon"
+    );
+
+    next(creatingPokemonError);
+  }
 };

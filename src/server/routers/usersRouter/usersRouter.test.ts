@@ -1,8 +1,8 @@
 import "../../../loadEnvironment";
+import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
 import request from "supertest";
 import bcrypt from "bcryptjs";
-import { MongoMemoryServer } from "mongodb-memory-server";
 import connectDatabase from "../../../database/connectDatabase";
 import User from "../../../database/models/User";
 import { type UserStructure, type UserLoginCredentials } from "../../types";
