@@ -9,7 +9,7 @@ export interface UserStructure extends UserLoginCredentials {
   email: string;
 }
 
-export interface PokemonStructure {
+export interface UserPokemonStructure {
   id: string;
   name: string;
   types: string[];
@@ -18,10 +18,12 @@ export interface PokemonStructure {
   weight: number;
   baseExp: number;
   imageUrl: string;
+  backupImageUrl: string;
+  createdBy: string;
 }
 
 export type PokemonData = Pick<
-  PokemonStructure,
+  UserPokemonStructure,
   "id" | "name" | "types" | "ability" | "height" | "weight" | "baseExp"
 >;
 

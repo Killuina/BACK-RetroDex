@@ -1,6 +1,6 @@
-import { type PokemonData, type PokemonStructure } from "../server/types";
+import { type PokemonData, type UserPokemonStructure } from "../server/types";
 
-export const mockPokemon: PokemonStructure = {
+export const mockUserPokemon: UserPokemonStructure = {
   id: "640f22f29ef06cb2185232e3",
   name: "Pokamion",
   types: ["Pesao"],
@@ -9,6 +9,9 @@ export const mockPokemon: PokemonStructure = {
   weight: 0,
   baseExp: 0,
   imageUrl: "/pokamion.png",
+  backupImageUrl:
+    "http/whvdnqxlctrpqnppjuwd.supabase.co/storage/v1/object/public/pokemon/pokamion.webp",
+  createdBy: "63fa113cda52dff29b261e0a",
 };
 
 export const mockPokemonData: PokemonData = {

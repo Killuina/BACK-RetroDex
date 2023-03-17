@@ -1,11 +1,14 @@
 import { type NextFunction, type Request, type Response } from "express";
 import mongoose from "mongoose";
 import { CustomError } from "../../../CustomError/CustomError.js";
-import UserPokemon from "../../../database/models/UserPokemon.js";
+import UserPokemon, {
+  type UserPokemonSchemaStructure,
+} from "../../../database/models/UserPokemon.js";
+import { type CustomRequest } from "../../types.js";
 import statusCodes from "../../utils/statusCodes.js";
 
 const {
-  success: { okCode },
+  success: { okCode, resourceCreated },
   serverError: { internalServer },
   clientError: { badRequest },
 } = statusCodes;
@@ -68,5 +71,34 @@ export const deleteUserPokemonById = async (
     res.status(okCode).json({ message: `${deletedPokemon.name} deleted` });
   } catch (error: unknown) {
     next(error);
+  }
+};
+
+export const createUserPokemon = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userPokemon = req.body as UserPokemonSchemaStructure;
+
+    const { userId } = req;
+
+    await UserPokemon.create({
+      ...userPokemon,
+      createdBy: userId,
+    });
+
+    res
+      .status(resourceCreated)
+      .json({ message: `${userPokemon.name} created` });
+  } catch (error: unknown) {
+    const creatingPokemonError = new CustomError(
+      (error as Error).message,
+      internalServer,
+      "Error creating Pokémon"
+    );
+
+    next(creatingPokemonError);
   }
 };

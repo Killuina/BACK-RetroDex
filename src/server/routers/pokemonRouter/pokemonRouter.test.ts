@@ -4,7 +4,7 @@ import request from "supertest";
 import mongoose from "mongoose";
 import { app } from "../..";
 import connectDatabase from "../../../database/connectDatabase";
-import { mockPokemon } from "../../../mocks/pokemonMocks";
+import { mockUserPokemon } from "../../../mocks/pokemonMocks";
 import { paths } from "../../paths/paths";
 import statusCodes from "../../utils/statusCodes";
 import UserPokemon from "../../../database/models/UserPokemon";
@@ -26,7 +26,7 @@ beforeAll(async () => {
   const mongodbServerUrl = mockMongodbServer.getUri();
 
   await connectDatabase(mongodbServerUrl);
-  await UserPokemon.create(mockPokemon);
+  await UserPokemon.create(mockUserPokemon);
 });
 
 afterAll(async () => {
@@ -76,7 +76,7 @@ describe("Given the DELETE /pokemon/:userPokemonId endpoint", () => {
 
   describe("When it receives a request to delete 'Pokamion'", () => {
     test("Then it should respond with okCode and message: 'Pokamion' deleted", async () => {
-      const { _id: id } = await UserPokemon.create(mockPokemon);
+      const { _id: id } = await UserPokemon.create(mockUserPokemon);
 
       const deletePokamionEndpoint = `${pokemonPath}/delete/${id.toString()}`;
 
@@ -87,7 +87,7 @@ describe("Given the DELETE /pokemon/:userPokemonId endpoint", () => {
 
       expect(response.body).toHaveProperty(
         "message",
-        `${mockPokemon.name} deleted`
+        `${mockUserPokemon.name} deleted`
       );
     });
 
