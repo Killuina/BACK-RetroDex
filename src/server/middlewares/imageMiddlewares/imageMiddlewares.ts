@@ -3,7 +3,7 @@ import path from "path";
 import fs from "fs/promises";
 import { type NextFunction, type Response } from "express";
 import { type CustomRequest } from "../../types";
-import { bucket, upload } from "./imageMiddlewaresConfigurations";
+import { bucket } from "./imageMiddlewaresConfigurations";
 import sharp from "sharp";
 import { CustomError } from "../../../CustomError/CustomError";
 import statusCodes from "../../utils/statusCodes";
@@ -11,8 +11,6 @@ import statusCodes from "../../utils/statusCodes";
 const {
   clientError: { badRequest },
 } = statusCodes;
-
-export const uploadImage = upload.single("image");
 
 export const optimizeImage = async (
   req: CustomRequest,

@@ -10,6 +10,9 @@ export const paths: Paths = {
 
   pokemon: {
     pokemonPath: "/pokemon",
-    endpoints: { deleteUserPokemon: "/delete/:userPokemonId" },
+    endpoints: {
+      deleteUserPokemon: "/delete/:userPokemonId",
+      createUserPokemon: "/create",
+    },
   },
 };

@@ -1,3 +1,4 @@
+import "../../../loadEnvironment";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import request from "supertest";
 import mongoose from "mongoose";
@@ -18,11 +19,11 @@ const {
   serverError: { internalServer },
 } = statusCodes;
 
-let mongodbServer: MongoMemoryServer;
+let mockMongodbServer: MongoMemoryServer;
 
 beforeAll(async () => {
-  mongodbServer = await MongoMemoryServer.create();
-  const mongodbServerUrl = mongodbServer.getUri();
+  mockMongodbServer = await MongoMemoryServer.create();
+  const mongodbServerUrl = mockMongodbServer.getUri();
 
   await connectDatabase(mongodbServerUrl);
   await UserPokemon.create(mockPokemon);
@@ -30,7 +31,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await mongoose.connection.close();
-  await mongodbServer.stop();
+  await mockMongodbServer.stop();
 });
 
 afterEach(async () => {

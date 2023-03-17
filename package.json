@@ -8,10 +8,12 @@
     "start": "node dist",
     "build": "tsc",
     "build:dev": "tsc --watch",
-    "test": "jest",
-    "test:dev": "jest --watch",
-    "test:coverage": "jest --coverage --watchAll=false",
-    "prepare": "husky install"
+    "test:coverage": "npm run test:unit -- --coverage --watchAll=false && npm run test:integration -- --coverage --watchAll=false",
+    "prepare": "husky install",
+    "test:unit": "jest --config=jest.config.cjs",
+    "test:integration": "jest --config=jest.integration.config.cjs",
+    "test": "npm run test:unit && npm run test:integration",
+    "test:dev": "npm run test:unit && npm run test:integration -- --watch"
   },
   "keywords": [],
   "author": "",
