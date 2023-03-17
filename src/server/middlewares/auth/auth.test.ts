@@ -1,5 +1,6 @@
 import { type Response } from "express";
 import jwt from "jsonwebtoken";
+import { type CustomJwtPayload } from "../../controllers/userControllers/types";
 import { type CustomRequest, type UserId } from "../../types";
 import auth from "./auth";
 
@@ -17,11 +18,12 @@ beforeEach(() => jest.clearAllMocks());
 describe("Given the auth middleware", () => {
   describe("When it receives a request with an authorization header", () => {
     test("Then it should call the received next function", () => {
-      const userId: UserId = {
-        id: "1234",
+      const tokenPayload: CustomJwtPayload = {
+        sub: "1234",
+        username: "",
       };
 
-      jwt.verify = jest.fn().mockReturnValue(userId);
+      jwt.verify = jest.fn().mockReturnValue(tokenPayload);
 
       auth(mockReq as CustomRequest, mockRes as Response, mockNext);
 

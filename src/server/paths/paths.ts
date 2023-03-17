@@ -12,7 +12,7 @@ export const paths: Paths = {
     pokemonPath: "/pokemon",
     endpoints: {
       deleteUserPokemon: "/delete/:userPokemonId",
-      createUserPokemon: "/create",
+      createPokemon: "/create",
     },
   },
 };

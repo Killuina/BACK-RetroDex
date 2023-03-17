@@ -1,30 +1,29 @@
-import "../../../loadEnvironment";
 import path from "path";
 import fs from "fs/promises";
 import { type NextFunction, type Response } from "express";
 import { type CustomRequest } from "../../types";
-import { bucket } from "./imageMiddlewaresConfigurations";
+import { bucket, upload } from "./imageMiddlewaresConfigurations.js";
 import sharp from "sharp";
-import { CustomError } from "../../../CustomError/CustomError";
-import statusCodes from "../../utils/statusCodes";
+import { CustomError } from "../../../CustomError/CustomError.js";
+import statusCodes from "../../utils/statusCodes.js";
 
 const {
-  clientError: { badRequest },
+  clientError: { badRequest, conflict },
 } = statusCodes;
+
+export const uploadImage = upload.single("image");
 
 export const optimizeImage = async (
   req: CustomRequest,
   res: Response,
   next: NextFunction
 ) => {
-  const pokemonImageOriginalName = req.file?.originalname;
   const pokemonImageName = req.file?.filename;
 
   const basePath = `${path.basename(
-    pokemonImageOriginalName!,
-    path.extname(pokemonImageOriginalName!)
+    pokemonImageName!,
+    path.extname(pokemonImageName!)
   )}`;
-
   try {
     await sharp(path.join("uploads", pokemonImageName!))
       .resize(120, 120, { fit: "cover" })
@@ -52,7 +51,7 @@ export const backupImage = async (
   try {
     const pokemonImage = req.file?.filename;
 
-    const pokemonImageUrl = path.join("/uploads", pokemonImage!);
+    const pokemonImageUrl = path.join("uploads", pokemonImage!);
 
     const backupPokemonImage = await fs.readFile(pokemonImageUrl);
 
@@ -62,7 +61,11 @@ export const backupImage = async (
     );
 
     if (!data) {
-      throw error;
+      throw new CustomError(
+        error.message,
+        conflict,
+        "Error creating backup image"
+      );
     }
 
     const {

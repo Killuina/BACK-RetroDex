@@ -1,5 +1,6 @@
 interface StatusCodes {
   clientError: {
+    conflict: number;
     notFound: number;
     badRequest: number;
     unauthorized: number;
@@ -14,6 +15,7 @@ interface StatusCodes {
 
 const statusCodes: StatusCodes = {
   clientError: {
+    conflict: 409,
     notFound: 400,
     badRequest: 400,
     unauthorized: 401,

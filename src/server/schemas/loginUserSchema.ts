@@ -1,4 +1,4 @@
-import { Joi } from "express-validation";
+import { Joi, validate } from "express-validation";
 
 const loginUserSchema = {
   body: Joi.object({
@@ -7,4 +7,6 @@ const loginUserSchema = {
   }),
 };
 
-export default loginUserSchema;
+const loginValidation = validate(loginUserSchema, {}, { abortEarly: false });
+
+export default loginValidation;

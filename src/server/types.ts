@@ -22,10 +22,16 @@ export interface UserPokemonStructure {
   createdBy: string;
 }
 
-export type PokemonData = Pick<
-  UserPokemonStructure,
-  "id" | "name" | "types" | "ability" | "height" | "weight" | "baseExp"
->;
+export interface UserPokemonData {
+  id: string;
+  name: string;
+  firstType: string;
+  secondType: string;
+  ability: string;
+  height: number;
+  weight: number;
+  baseExp: number;
+}
 
 export interface UserId {
   id: string;
