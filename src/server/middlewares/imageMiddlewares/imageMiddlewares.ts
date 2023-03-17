@@ -19,7 +19,14 @@ export const backupImage = async (
 
     const backupPokemonImage = await fs.readFile(pokemonImageUrl);
 
-    await bucket.upload(pokemonImage!, backupPokemonImage);
+    const { data, error } = await bucket.upload(
+      pokemonImage!,
+      backupPokemonImage
+    );
+
+    if (!data) {
+      throw error;
+    }
 
     const {
       data: { publicUrl },
