@@ -8,7 +8,7 @@ import { paths } from "../../paths/paths.js";
 
 const {
   pokemon: {
-    endpoints: { deleteUserPokemon },
+    endpoints: { deleteUserPokemon, createUserPokemon },
   },
 } = paths;
 

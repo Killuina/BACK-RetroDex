@@ -1,4 +1,4 @@
-import { model, Schema } from "mongoose";
+import { type InferSchemaType, model, Schema } from "mongoose";
 
 const userPokemonSchema = new Schema({
   name: {
@@ -30,8 +30,13 @@ const userPokemonSchema = new Schema({
   backupImageUrl: {
     type: String,
   },
+  createdBy: { type: Schema.Types.ObjectId, ref: "User" },
 });
 
 const UserPokemon = model("UserPokemon", userPokemonSchema, "userPokemon");
+
+export type UserPokemonSchemaStructure = InferSchemaType<
+  typeof userPokemonSchema
+>;
 
 export default UserPokemon;

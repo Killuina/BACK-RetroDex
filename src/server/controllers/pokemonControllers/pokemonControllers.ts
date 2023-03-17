@@ -1,7 +1,10 @@
 import { type NextFunction, type Request, type Response } from "express";
 import mongoose from "mongoose";
 import { CustomError } from "../../../CustomError/CustomError.js";
-import UserPokemon from "../../../database/models/UserPokemon.js";
+import UserPokemon, {
+  type UserPokemonSchemaStructure,
+} from "../../../database/models/UserPokemon.js";
+import { type CustomRequest } from "../../types.js";
 import statusCodes from "../../utils/statusCodes.js";
 
 const {
@@ -69,4 +72,15 @@ export const deleteUserPokemonById = async (
   } catch (error: unknown) {
     next(error);
   }
+};
+
+export const createUserPokemon = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const userPokemon = req.body as UserPokemonSchemaStructure;
+  const { userId } = req;
+
+  await UserPokemon.create({ ...userPokemon, createdBy: userId });
 };
