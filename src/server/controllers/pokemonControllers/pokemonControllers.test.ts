@@ -159,10 +159,6 @@ describe("Given the deleteUserPokemonById controller", () => {
 describe("Given the createUserPokemon controller", () => {
   const mockUserId = "640f22f29ef06cb2185232e3";
 
-  const expectedResponseBody = {
-    message: `${mockUserPokemon.name} created`,
-  };
-
   const mockRes: Partial<Response> = {
     status: jest.fn().mockReturnThis(),
     json: jest.fn(),
@@ -176,7 +172,7 @@ describe("Given the createUserPokemon controller", () => {
   describe("When it receives a request with a Pokémon named 'Pokamion', and all data necesary to create it", () => {
     UserPokemon.create = jest.fn().mockResolvedValue({
       ...mockUserPokemon,
-      id: new mongoose.Types.ObjectId(),
+      id: "640f22f29ef06cb2185232e4",
     });
 
     test("Then it should call its status method with resourceCreated code", async () => {
@@ -189,7 +185,14 @@ describe("Given the createUserPokemon controller", () => {
       expect(mockRes.status).toHaveBeenCalledWith(resourceCreated);
     });
 
-    test("Then it should call its json method with message: 'Pokamion created!'", async () => {
+    test("Then it should call its json method with property pokemon with all Pokamion data", async () => {
+      const expectedResponseBody = {
+        pokemon: {
+          ...mockUserPokemon,
+          id: "640f22f29ef06cb2185232e4",
+        },
+      };
+
       await createUserPokemon(
         mockReq as CustomRequest,
         mockRes as Response,
@@ -198,25 +201,25 @@ describe("Given the createUserPokemon controller", () => {
 
       expect(mockRes.json).toHaveBeenCalledWith(expectedResponseBody);
     });
-  });
 
-  describe("When it receives a request with a Pokémon and the creating on the database process fails", () => {
-    test("Then it should call the received next function with an error with message 'Error creating the Pokémon on the database'", async () => {
-      const expectedError = new Error(
-        "Error creating the Pokémon on the database"
-      );
+    describe("When it receives a request with a Pokémon and the creating on the database process fails", () => {
+      test("Then it should call the received next function with an error with message 'Error creating the Pokémon on the database'", async () => {
+        const expectedError = new Error(
+          "Error creating the Pokémon on the database"
+        );
 
-      UserPokemon.create = jest.fn().mockRejectedValue(expectedError);
+        UserPokemon.create = jest.fn().mockRejectedValue(expectedError);
 
-      await createUserPokemon(
-        mockReq as CustomRequest,
-        mockRes as Response,
-        mockNext
-      );
+        await createUserPokemon(
+          mockReq as CustomRequest,
+          mockRes as Response,
+          mockNext
+        );
 
-      expect(mockNext).toHaveBeenCalledWith(
-        expect.objectContaining({ message: expectedError.message })
-      );
+        expect(mockNext).toHaveBeenCalledWith(
+          expect.objectContaining({ message: expectedError.message })
+        );
+      });
     });
   });
 });
