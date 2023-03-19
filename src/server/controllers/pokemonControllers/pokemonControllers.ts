@@ -81,15 +81,13 @@ export const createUserPokemon = async (
     const userPokemon = req.body as UserPokemonData;
     const { userId } = req;
 
-    await UserPokemon.create({
+    const newUserPokemon = await UserPokemon.create({
       ...userPokemon,
       types: [userPokemon.firstType, userPokemon.secondType],
       createdBy: userId,
     });
 
-    res
-      .status(resourceCreated)
-      .json({ message: `${userPokemon.name} created` });
+    res.status(resourceCreated).json({ pokemon: newUserPokemon });
   } catch (error: unknown) {
     const creatingPokemonError = new CustomError(
       (error as Error).message,

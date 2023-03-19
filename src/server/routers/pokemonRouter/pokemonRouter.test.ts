@@ -155,9 +155,7 @@ describe("Given the DELETE /pokemon/:userPokemonId endpoint", () => {
 
 describe("Given a POST /games/create endpoint", () => {
   describe("When it receives a request with all needed data to create a Pokemon named 'Pokamion", () => {
-    test("Then it should respond with resource created status code and message: 'Pokamion created!'", async () => {
-      const expectedMessage = "Pokamion created";
-
+    test("Then it should respond with resource created status code and all Pokamion data, including its name'", async () => {
       const response = await request(app)
         .post(`${pokemonPath}${createPokemon}`)
         .set("Authorization", authorizationHeader)
@@ -171,7 +169,10 @@ describe("Given a POST /games/create endpoint", () => {
         .attach("image", "testMedia/test.png")
         .expect(resourceCreated);
 
-      expect(response.body).toHaveProperty("message", expectedMessage);
+      expect(response.body).toHaveProperty(
+        "pokemon",
+        expect.objectContaining({ name: mockUserPokemon.name })
+      );
     });
   });
 
