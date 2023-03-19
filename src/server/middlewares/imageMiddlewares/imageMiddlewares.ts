@@ -18,13 +18,13 @@ export const optimizeImage = async (
   res: Response,
   next: NextFunction
 ) => {
-  const pokemonImageName = req.file?.filename;
-
-  const basePath = `${path.basename(
-    pokemonImageName!,
-    path.extname(pokemonImageName!)
-  )}`;
   try {
+    const pokemonImageName = req.file?.filename;
+
+    const basePath = `${path.basename(
+      pokemonImageName!,
+      path.extname(pokemonImageName!)
+    )}`;
     await sharp(path.join("uploads", pokemonImageName!))
       .resize(120, 120, { fit: "cover" })
       .webp({ quality: 100 })

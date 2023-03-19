@@ -5,10 +5,10 @@ const createUserPokemonSchema = {
     name: Joi.string().max(11).required(),
     ability: Joi.string().max(11).required(),
     firstType: Joi.string().required(),
-    secondType: Joi.string().optional(),
-    height: Joi.number().max(500).required(),
-    weight: Joi.number().max(1000).required(),
-    baseExp: Joi.number().max(300).required(),
+    secondType: Joi.string().required(),
+    height: Joi.string().max(3).required(),
+    weight: Joi.string().max(3).required(),
+    baseExp: Joi.string().max(3).required(),
   }),
 };
 
