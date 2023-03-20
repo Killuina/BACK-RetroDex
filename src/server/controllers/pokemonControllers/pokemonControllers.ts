@@ -99,7 +99,7 @@ export const createUserPokemon = async (
   }
 };
 
-const getPokemonById = async (
+export const getPokemonById = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -111,12 +111,20 @@ const getPokemonById = async (
       _id: pokemonId,
     }).exec();
 
+    if (!pokemon) {
+      throw new CustomError(
+        "Pokémon not found",
+        internalServer,
+        "Error finding your Pokémon"
+      );
+    }
+
     res.status(200).json({ pokemon });
   } catch (error: unknown) {
     const getPokemonById = new CustomError(
       (error as Error).message,
       internalServer,
-      "Error finding your pokémon"
+      "Error finding your Pokémon"
     );
 
     next(getPokemonById);

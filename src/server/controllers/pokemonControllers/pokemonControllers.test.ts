@@ -9,6 +9,7 @@ import statusCodes from "../../utils/statusCodes";
 import {
   createUserPokemon,
   deleteUserPokemonById,
+  getPokemonById,
   getUserPokemon,
 } from "./pokemonControllers";
 
@@ -220,6 +221,53 @@ describe("Given the createUserPokemon controller", () => {
           expect.objectContaining({ message: expectedError.message })
         );
       });
+    });
+  });
+});
+
+describe("Given a getPokemonById controller", () => {
+  const mockRes: Partial<Response> = {
+    status: jest.fn().mockReturnThis(),
+    json: jest.fn(),
+  };
+  const mockReq: Partial<Request> = {
+    params: { userPokemonId: mockUserPokemon.id },
+  };
+  const mockNext: NextFunction = jest.fn();
+
+  describe("When it receives a request get a Pokemon by id", () => {
+    test("Then it should call its status method with a status 200 ", async () => {
+      UserPokemon.findOne = jest.fn().mockImplementationOnce(() => ({
+        exec: jest.fn().mockResolvedValue(mockUserPokemon),
+      }));
+
+      await getPokemonById(mockReq as Request, mockRes as Response, mockNext);
+
+      expect(mockRes.status).toHaveBeenCalledWith(okCode);
+    });
+
+    test("Then it should respond with the requested Pokémon, 'Pokamion'", async () => {
+      UserPokemon.findOne = jest.fn().mockImplementationOnce(() => ({
+        exec: jest.fn().mockResolvedValue(mockUserPokemon),
+      }));
+
+      await getPokemonById(mockReq as Request, mockRes as Response, mockNext);
+
+      expect(mockRes.json).toHaveBeenCalledWith({ pokemon: mockUserPokemon });
+    });
+  });
+
+  describe("When it the finding pokemon process fails", () => {
+    test("Then it should call its next method with an error and status 500", async () => {
+      UserPokemon.findOne = jest.fn().mockImplementationOnce(() => ({
+        exec: jest.fn().mockResolvedValue(undefined),
+      }));
+
+      await getPokemonById(mockReq as Request, mockRes as Response, mockNext);
+
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ publicMessage: "Error finding your Pokémon" })
+      );
     });
   });
 });
