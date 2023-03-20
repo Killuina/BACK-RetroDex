@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createUserPokemon,
   deleteUserPokemonById,
+  getPokemonById,
   getUserPokemon,
 } from "../../controllers/pokemonControllers/pokemonControllers.js";
 import auth from "../../middlewares/auth/auth.js";
@@ -15,7 +16,7 @@ import createUserPokemonValidation from "../../schemas/createUserPokemon.js";
 
 const {
   pokemon: {
-    endpoints: { deleteUserPokemon, createPokemon },
+    endpoints: { deleteUserPokemon, createPokemon, getOnePokemon },
   },
 } = paths;
 
@@ -32,3 +33,4 @@ pokemonRouter.post(
   backupImage,
   createUserPokemon
 );
+pokemonRouter.get(getOnePokemon, getPokemonById);

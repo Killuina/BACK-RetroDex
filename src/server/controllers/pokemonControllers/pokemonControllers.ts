@@ -107,6 +107,14 @@ export const getPokemonById = async (
   try {
     const { pokemonId } = req.params;
 
+    if (!mongoose.Types.ObjectId.isValid(pokemonId)) {
+      throw new CustomError(
+        "Invalid id",
+        badRequest,
+        "Please enter a valid Id"
+      );
+    }
+
     const pokemon = await UserPokemon.findById({
       _id: pokemonId,
     }).exec();

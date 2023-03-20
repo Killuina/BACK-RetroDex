@@ -196,3 +196,35 @@ describe("Given a POST /games/create endpoint", () => {
     });
   });
 });
+
+describe("Given the GET /pokemon/:pokemonId endpoint", () => {
+  describe("When it receives a request to get 'Pokamion' details", () => {
+    test("Then it should respond with okCode and all 'Pokamion' data", async () => {
+      const { _id: id } = await UserPokemon.create(mockUserPokemon);
+
+      const getPokamionEndpoint = `${pokemonPath}/${id.toString()}`;
+      const response = await request(app)
+        .get(getPokamionEndpoint)
+        .expect(okCode);
+
+      expect(response.body).toHaveProperty("pokemon", {
+        ...mockUserPokemon,
+        id: id.toString(),
+      });
+    });
+  });
+
+  describe("When it receives a request to get 'Pokamion' info but the finding process fails", () => {
+    test("Then the response body should include status code 500 and error message 'Error finding your Pokémon'", async () => {
+      const getPokamionEndpoint = `${pokemonPath}/640f22f29ef06cb2185232e3`;
+
+      const expectedErrorMessage = "Error finding your Pokémon";
+
+      const response = await request(app)
+        .get(getPokamionEndpoint)
+        .expect(internalServer);
+
+      expect(response.body).toHaveProperty("error", expectedErrorMessage);
+    });
+  });
+});

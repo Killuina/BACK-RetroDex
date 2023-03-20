@@ -86,8 +86,6 @@ describe("Given the deleteUserPokemonById controller", () => {
 
   describe("When it receives a request to delete 'Pokamion'", () => {
     test("Then it should call its status method with 200", async () => {
-      mongoose.Types.ObjectId.isValid = () => true;
-
       UserPokemon.findByIdAndDelete = jest.fn().mockImplementationOnce(() => ({
         exec: jest.fn().mockResolvedValue(mockUserPokemon),
       }));
@@ -120,8 +118,6 @@ describe("Given the deleteUserPokemonById controller", () => {
     test("Then it should call the received next function with message 'Error deleting pokemon'", async () => {
       const expectedErrorMessage = "Error deleting pokémon";
 
-      mongoose.Types.ObjectId.isValid = () => true;
-
       UserPokemon.findByIdAndDelete = jest.fn().mockImplementationOnce(() => ({
         exec: jest.fn().mockResolvedValue(null),
       }));
@@ -139,10 +135,12 @@ describe("Given the deleteUserPokemonById controller", () => {
   });
 
   describe("When it receives an invalid id", () => {
+    const mockReq: Partial<Request> = {
+      params: { userPokemonId: "123" },
+    };
+
     test("Then it should call next function with an error with message 'Please enter a valid Id'", async () => {
       const expectedErrorMessage = "Please enter a valid Id";
-
-      mongoose.Types.ObjectId.isValid = () => false;
 
       await deleteUserPokemonById(
         mockReq as Request,
@@ -231,11 +229,11 @@ describe("Given a getPokemonById controller", () => {
     json: jest.fn(),
   };
   const mockReq: Partial<Request> = {
-    params: { userPokemonId: mockUserPokemon.id },
+    params: { pokemonId: mockUserPokemon.id },
   };
   const mockNext: NextFunction = jest.fn();
 
-  describe("When it receives a request get a Pokemon by id", () => {
+  describe("When it receives a request to get a Pokemon by id", () => {
     test("Then it should call its status method with a status 200 ", async () => {
       UserPokemon.findOne = jest.fn().mockImplementationOnce(() => ({
         exec: jest.fn().mockResolvedValue(mockUserPokemon),
@@ -258,7 +256,7 @@ describe("Given a getPokemonById controller", () => {
   });
 
   describe("When it the finding pokemon process fails", () => {
-    test("Then it should call its next method with an error and status 500", async () => {
+    test("Then it should call its next method with an error message: 'Error finding your pokemon' and status 500", async () => {
       UserPokemon.findOne = jest.fn().mockImplementationOnce(() => ({
         exec: jest.fn().mockResolvedValue(undefined),
       }));
@@ -267,6 +265,22 @@ describe("Given a getPokemonById controller", () => {
 
       expect(mockNext).toHaveBeenCalledWith(
         expect.objectContaining({ publicMessage: "Error finding your Pokémon" })
+      );
+    });
+  });
+
+  describe("When it receives an invalid id", () => {
+    const mockReq: Partial<Request> = {
+      params: { pokemonId: "123" },
+    };
+
+    test("Then it should call next function with an error with message 'Invalid Id'", async () => {
+      const expectedErrorMessage = "Invalid id";
+
+      await getPokemonById(mockReq as Request, mockRes as Response, mockNext);
+
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({ message: expectedErrorMessage })
       );
     });
   });
