@@ -4,7 +4,6 @@ import { CustomError } from "../../../CustomError/CustomError.js";
 import UserPokemon from "../../../database/models/UserPokemon.js";
 import { type UserPokemonData, type CustomRequest } from "../../types.js";
 import statusCodes from "../../utils/statusCodes.js";
-import { PokemonTypes } from "./types.js";
 
 const {
   success: { okCode, resourceCreated },
@@ -20,7 +19,7 @@ export const getUserPokemonList = async (
   try {
     const pagination = {
       limit: 4,
-      page: +req.query.page! || 0,
+      page: +req.query.page! || 1,
     };
 
     let pokemonList;
