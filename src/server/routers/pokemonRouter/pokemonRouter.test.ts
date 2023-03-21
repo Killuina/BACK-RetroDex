@@ -11,7 +11,7 @@ import UserPokemon from "../../../database/models/UserPokemon";
 import { PokemonTypes } from "../../controllers/pokemonControllers/types";
 
 const authorizationHeader =
-  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2ZhMTEzY2RhNTJkZmYyOGIyNjFlMGEiLCJ1c2VybmFtZSI6Ik1hbm9sbyIsImlhdCI6MTY3OTI0MDAzMSwiZXhwIjoxNjc5NDEyODMxfQ.GF498WuPFpwITeYtLHtrRjqe7NPUmOG4GGhPAuAthig";
+  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2ZhMTEzY2RhNTJkZmYyOGIyNjFlMGEiLCJ1c2VybmFtZSI6Ik1hbm9sbyIsImlhdCI6MTY3OTI1NDMxMSwiZXhwIjoxNjc5NDI3MTExfQ.TyV10fwdKm3CtiAeSi_pcONlurNytiWtKqhWeEAZVCo";
 
 const {
   pokemon: {
@@ -74,7 +74,7 @@ describe("Given the GET /pokemon endpoint", () => {
 
 describe("Given the DELETE /pokemon/:userPokemonId endpoint", () => {
   const noBearerAuthorizationHeader =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2ZhMTEzY2RhNTJkZmYyOGIyNjFlMGEiLCJ1c2VybmFtZSI6Ik1hbm9sbyIsImlhdCI6MTY3OTI0MDAzMSwiZXhwIjoxNjc5NDEyODMxfQ.GF498WuPFpwITeYtLHtrRjqe7NPUmOG4GGhPAuAthig";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2ZhMTEzY2RhNTJkZmYyOGIyNjFlMGEiLCJ1c2VybmFtZSI6Ik1hbm9sbyIsImlhdCI6MTY3OTI1NDMxMSwiZXhwIjoxNjc5NDI3MTExfQ.TyV10fwdKm3CtiAeSi_pcONlurNytiWtKqhWeEAZVCo";
 
   describe("When it receives a request to delete 'Pokamion'", () => {
     test("Then it should respond with okCode and message: 'Pokamion' deleted", async () => {

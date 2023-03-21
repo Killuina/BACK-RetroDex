@@ -18,7 +18,7 @@ const {
 
 beforeEach(() => jest.clearAllMocks());
 
-describe("Given the getUserPokemon controller", () => {
+describe("Given the getUserPokemonList controller", () => {
   const mockRes: Partial<Response> = {
     status: jest.fn().mockReturnThis(),
     json: jest.fn(),
@@ -30,10 +30,20 @@ describe("Given the getUserPokemon controller", () => {
   };
   const mockNext: NextFunction = jest.fn();
 
+  const totalPokemon = 1;
+
   describe("When it receives a request", () => {
     test("Then it should respond with a status code 200", async () => {
-      UserPokemon.find = jest.fn().mockImplementationOnce(() => ({
-        exec: jest.fn().mockResolvedValue({}),
+      UserPokemon.find = jest.fn().mockReturnValue({
+        limit: jest.fn().mockReturnValue({
+          skip: jest.fn().mockReturnValue({
+            exec: jest.fn().mockResolvedValue(mockUserPokemon),
+          }),
+        }),
+      });
+
+      UserPokemon.countDocuments = jest.fn().mockImplementation(() => ({
+        exec: jest.fn().mockResolvedValue(totalPokemon),
       }));
 
       await getUserPokemonList(
@@ -45,11 +55,17 @@ describe("Given the getUserPokemon controller", () => {
       expect(mockRes.status).toHaveBeenCalledWith(okCode);
     });
 
-    test("Then it should respond with property pokemon assigned to an empty object", async () => {
-      const expectedEmptyObject = { pokemon: {} };
+    test("Then it should respond with property pokemon assigned to 'Pokamion'", async () => {
+      UserPokemon.find = jest.fn().mockReturnValue({
+        limit: jest.fn().mockReturnValue({
+          skip: jest.fn().mockReturnValue({
+            exec: jest.fn().mockResolvedValue(mockUserPokemon),
+          }),
+        }),
+      });
 
-      UserPokemon.find = jest.fn().mockImplementationOnce(() => ({
-        exec: jest.fn().mockResolvedValue({}),
+      UserPokemon.countDocuments = jest.fn().mockImplementation(() => ({
+        exec: jest.fn().mockResolvedValue(totalPokemon),
       }));
 
       await getUserPokemonList(
@@ -58,7 +74,10 @@ describe("Given the getUserPokemon controller", () => {
         mockNext
       );
 
-      expect(mockRes.json).toHaveBeenCalledWith(expectedEmptyObject);
+      expect(mockRes.json).toHaveBeenCalledWith({
+        pokemon: mockUserPokemon,
+        totalPokemon,
+      });
     });
   });
 
@@ -70,8 +89,16 @@ describe("Given the getUserPokemon controller", () => {
         "Couldn't retreive Pokemon"
       );
 
-      UserPokemon.find = jest.fn().mockImplementationOnce(() => ({
-        exec: jest.fn().mockRejectedValue(expectedError),
+      UserPokemon.find = jest.fn().mockReturnValue({
+        limit: jest.fn().mockReturnValue({
+          skip: jest.fn().mockReturnValue({
+            exec: jest.fn().mockRejectedValue(expectedError),
+          }),
+        }),
+      });
+
+      UserPokemon.countDocuments = jest.fn().mockImplementation(() => ({
+        exec: jest.fn().mockResolvedValue(totalPokemon),
       }));
 
       await getUserPokemonList(
@@ -88,8 +115,16 @@ describe("Given the getUserPokemon controller", () => {
     test("The it should respond with status 200 and all pokemon with type water", async () => {
       mockReq.query!.type = "Water";
 
-      UserPokemon.find = jest.fn().mockImplementationOnce(() => ({
-        exec: jest.fn().mockResolvedValue(mockUserPokemon),
+      UserPokemon.find = jest.fn().mockReturnValue({
+        limit: jest.fn().mockReturnValue({
+          skip: jest.fn().mockReturnValue({
+            exec: jest.fn().mockResolvedValue(mockUserPokemon),
+          }),
+        }),
+      });
+
+      UserPokemon.countDocuments = jest.fn().mockImplementation(() => ({
+        exec: jest.fn().mockResolvedValue(totalPokemon),
       }));
 
       await getUserPokemonList(
@@ -99,7 +134,10 @@ describe("Given the getUserPokemon controller", () => {
       );
 
       expect(mockRes.status).toHaveBeenCalledWith(okCode);
-      expect(mockRes.json).toHaveBeenCalledWith({ pokemon: mockUserPokemon });
+      expect(mockRes.json).toHaveBeenCalledWith({
+        pokemon: mockUserPokemon,
+        totalPokemon,
+      });
     });
   });
 });

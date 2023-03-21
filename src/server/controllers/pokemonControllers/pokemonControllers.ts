@@ -4,7 +4,6 @@ import { CustomError } from "../../../CustomError/CustomError.js";
 import UserPokemon from "../../../database/models/UserPokemon.js";
 import { type UserPokemonData, type CustomRequest } from "../../types.js";
 import statusCodes from "../../utils/statusCodes.js";
-import { PokemonTypes } from "./types.js";
 
 const {
   success: { okCode, resourceCreated },
@@ -18,34 +17,28 @@ export const getUserPokemonList = async (
   next: NextFunction
 ) => {
   try {
+    const pagination = {
+      limit: 4,
+      page: +req.query.page! || 1,
+    };
+
     let pokemonList;
 
-    if (
-      req.query.type === PokemonTypes.bug ||
-      req.query.type === PokemonTypes.dark ||
-      req.query.type === PokemonTypes.dragon ||
-      req.query.type === PokemonTypes.electric ||
-      req.query.type === PokemonTypes.fairy ||
-      req.query.type === PokemonTypes.fighting ||
-      req.query.type === PokemonTypes.fire ||
-      req.query.type === PokemonTypes.flying ||
-      req.query.type === PokemonTypes.ghost ||
-      req.query.type === PokemonTypes.grass ||
-      req.query.type === PokemonTypes.ground ||
-      req.query.type === PokemonTypes.ice ||
-      req.query.type === PokemonTypes.normal ||
-      req.query.type === PokemonTypes.poison ||
-      req.query.type === PokemonTypes.psychic ||
-      req.query.type === PokemonTypes.rock ||
-      req.query.type === PokemonTypes.steel ||
-      req.query.type === PokemonTypes.water
-    ) {
-      pokemonList = await UserPokemon.find({ types: req.query.type }).exec();
+    if (req.query.type) {
+      pokemonList = await UserPokemon.find({ types: req.query.type })
+        .limit(pagination.limit)
+        .skip((pagination.page - 1) * pagination.limit)
+        .exec();
     } else {
-      pokemonList = await UserPokemon.find().exec();
+      pokemonList = await UserPokemon.find()
+        .limit(pagination.limit)
+        .skip((pagination.page - 1) * pagination.limit)
+        .exec();
     }
 
-    res.status(okCode).json({ pokemon: pokemonList });
+    const totalPokemon = await UserPokemon.countDocuments().exec();
+
+    res.status(okCode).json({ pokemon: pokemonList, totalPokemon });
   } catch (error: unknown) {
     const getPokemonError = new CustomError(
       (error as Error).message,
