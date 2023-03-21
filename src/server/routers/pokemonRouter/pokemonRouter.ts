@@ -3,7 +3,7 @@ import {
   createUserPokemon,
   deleteUserPokemonById,
   getPokemonById,
-  getUserPokemon,
+  getUserPokemonList,
 } from "../../controllers/pokemonControllers/pokemonControllers.js";
 import auth from "../../middlewares/auth/auth.js";
 import {
@@ -22,7 +22,7 @@ const {
 
 export const pokemonRouter = Router();
 
-pokemonRouter.get("/", getUserPokemon);
+pokemonRouter.get("/", getUserPokemonList);
 pokemonRouter.delete(deleteUserPokemon, auth, deleteUserPokemonById);
 pokemonRouter.post(
   createPokemon,

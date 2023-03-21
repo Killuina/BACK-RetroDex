@@ -6,7 +6,7 @@ import {
 export const mockUserPokemon: UserPokemonStructure = {
   id: "640f22f29ef06cb2185232e3",
   name: "Pokamion",
-  types: ["Pesao", "MuPesao"],
+  types: ["Pesao", "Water"],
   ability: "Pesao",
   height: 0,
   weight: 0,

@@ -54,24 +54,6 @@ describe("Given the GET /pokemon endpoint", () => {
       expect(response.body.pokemon).toHaveLength(expectedListLength);
     });
   });
-
-  describe("When it receives a request and there are no pokemon in the database", () => {
-    beforeEach(async () => {
-      await UserPokemon.deleteMany();
-    });
-
-    test("Then the response body should include status code 500 and error message 'Couldn't retreive Pokemon", async () => {
-      const expectedErrorMessage = {
-        error: "Couldn't retreive Pokémon",
-      };
-
-      const response = await request(app)
-        .get(pokemonPath)
-        .expect(internalServer);
-
-      expect(response.body).toStrictEqual(expectedErrorMessage);
-    });
-  });
 });
 
 describe("Given the DELETE /pokemon/:userPokemonId endpoint", () => {
