@@ -4,6 +4,7 @@ import { CustomError } from "../../../CustomError/CustomError.js";
 import UserPokemon from "../../../database/models/UserPokemon.js";
 import { type UserPokemonData, type CustomRequest } from "../../types.js";
 import statusCodes from "../../utils/statusCodes.js";
+import { PokemonTypes } from "./types.js";
 
 const {
   success: { okCode, resourceCreated },
@@ -11,22 +12,39 @@ const {
   clientError: { badRequest },
 } = statusCodes;
 
-export const getUserPokemon = async (
+export const getUserPokemonList = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const pokemon = await UserPokemon.find().exec();
-    if (pokemon.length === 0) {
-      throw new CustomError(
-        "There are no Pokemon on the database",
-        internalServer,
-        "Coudln't retreive Pokémon"
-      );
+    let pokemonList;
+    if (
+      req.query.type === PokemonTypes.bug ||
+      req.query.type === PokemonTypes.dark ||
+      req.query.type === PokemonTypes.dragon ||
+      req.query.type === PokemonTypes.electric ||
+      req.query.type === PokemonTypes.fairy ||
+      req.query.type === PokemonTypes.fighting ||
+      req.query.type === PokemonTypes.fire ||
+      req.query.type === PokemonTypes.flying ||
+      req.query.type === PokemonTypes.ghost ||
+      req.query.type === PokemonTypes.grass ||
+      req.query.type === PokemonTypes.ground ||
+      req.query.type === PokemonTypes.ice ||
+      req.query.type === PokemonTypes.normal ||
+      req.query.type === PokemonTypes.poison ||
+      req.query.type === PokemonTypes.psychic ||
+      req.query.type === PokemonTypes.rock ||
+      req.query.type === PokemonTypes.steel ||
+      req.query.type === PokemonTypes.water
+    ) {
+      pokemonList = await UserPokemon.find({ types: req.query.type }).exec();
+    } else {
+      pokemonList = await UserPokemon.find().exec();
     }
 
-    res.status(okCode).json({ pokemon });
+    res.status(okCode).json({ pokemon: pokemonList });
   } catch (error: unknown) {
     const getPokemonError = new CustomError(
       (error as Error).message,
