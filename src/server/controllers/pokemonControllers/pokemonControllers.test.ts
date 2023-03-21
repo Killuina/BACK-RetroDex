@@ -1,6 +1,4 @@
 import { type NextFunction, type Request, type Response } from "express";
-import mongoose from "mongoose";
-import { mock } from "node:test";
 import { CustomError } from "../../../CustomError/CustomError";
 import UserPokemon from "../../../database/models/UserPokemon";
 import { mockUserPokemon } from "../../../mocks/pokemonMocks";
@@ -10,7 +8,7 @@ import {
   createUserPokemon,
   deleteUserPokemonById,
   getPokemonById,
-  getUserPokemon,
+  getUserPokemonList,
 } from "./pokemonControllers";
 
 const {
@@ -25,7 +23,11 @@ describe("Given the getUserPokemon controller", () => {
     status: jest.fn().mockReturnThis(),
     json: jest.fn(),
   };
-  const mockReq: Partial<Request> = {};
+  const mockReq: Partial<Request> = {
+    query: {
+      types: "",
+    },
+  };
   const mockNext: NextFunction = jest.fn();
 
   describe("When it receives a request", () => {
@@ -34,7 +36,11 @@ describe("Given the getUserPokemon controller", () => {
         exec: jest.fn().mockResolvedValue({}),
       }));
 
-      await getUserPokemon(mockReq as Request, mockRes as Response, mockNext);
+      await getUserPokemonList(
+        mockReq as Request,
+        mockRes as Response,
+        mockNext
+      );
 
       expect(mockRes.status).toHaveBeenCalledWith(okCode);
     });
@@ -46,7 +52,11 @@ describe("Given the getUserPokemon controller", () => {
         exec: jest.fn().mockResolvedValue({}),
       }));
 
-      await getUserPokemon(mockReq as Request, mockRes as Response, mockNext);
+      await getUserPokemonList(
+        mockReq as Request,
+        mockRes as Response,
+        mockNext
+      );
 
       expect(mockRes.json).toHaveBeenCalledWith(expectedEmptyObject);
     });
@@ -64,9 +74,32 @@ describe("Given the getUserPokemon controller", () => {
         exec: jest.fn().mockRejectedValue(expectedError),
       }));
 
-      await getUserPokemon(mockReq as Request, mockRes as Response, mockNext);
+      await getUserPokemonList(
+        mockReq as Request,
+        mockRes as Response,
+        mockNext
+      );
 
       expect(mockNext).toHaveBeenCalledWith(expectedError);
+    });
+  });
+
+  describe("When it receives a request to filter by type 'Water'", () => {
+    test("The it should respond with status 200 and all pokemon with type water", async () => {
+      mockReq.query!.type = "Water";
+
+      UserPokemon.find = jest.fn().mockImplementationOnce(() => ({
+        exec: jest.fn().mockResolvedValue(mockUserPokemon),
+      }));
+
+      await getUserPokemonList(
+        mockReq as Request,
+        mockRes as Response,
+        mockNext
+      );
+
+      expect(mockRes.status).toHaveBeenCalledWith(okCode);
+      expect(mockRes.json).toHaveBeenCalledWith({ pokemon: mockUserPokemon });
     });
   });
 });
