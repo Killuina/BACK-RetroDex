@@ -28,12 +28,12 @@ export const getUserPokemonList = async (
     if (req.query.type) {
       pokemonList = await UserPokemon.find({ types: req.query.type })
         .limit(pagination.limit)
-        .skip(pagination.limit * pagination.page)
+        .skip((pagination.page - 1) * pagination.limit)
         .exec();
     } else {
       pokemonList = await UserPokemon.find()
         .limit(pagination.limit)
-        .skip(pagination.limit * pagination.page)
+        .skip((pagination.page - 1) * pagination.limit)
         .exec();
     }
 
