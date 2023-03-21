@@ -18,7 +18,7 @@ const {
 
 beforeEach(() => jest.clearAllMocks());
 
-describe("Given the getUserPokemonList controller", () => {
+describe("Given the getUserPokemon controller", () => {
   const mockRes: Partial<Response> = {
     status: jest.fn().mockReturnThis(),
     json: jest.fn(),
@@ -30,20 +30,10 @@ describe("Given the getUserPokemonList controller", () => {
   };
   const mockNext: NextFunction = jest.fn();
 
-  const totalPokemon = 1;
-
   describe("When it receives a request", () => {
     test("Then it should respond with a status code 200", async () => {
-      UserPokemon.find = jest.fn().mockReturnValue({
-        limit: jest.fn().mockReturnValue({
-          skip: jest.fn().mockReturnValue({
-            exec: jest.fn().mockResolvedValue(mockUserPokemon),
-          }),
-        }),
-      });
-
-      UserPokemon.countDocuments = jest.fn().mockImplementation(() => ({
-        exec: jest.fn().mockResolvedValue(totalPokemon),
+      UserPokemon.find = jest.fn().mockImplementationOnce(() => ({
+        exec: jest.fn().mockResolvedValue({}),
       }));
 
       await getUserPokemonList(
@@ -55,17 +45,11 @@ describe("Given the getUserPokemonList controller", () => {
       expect(mockRes.status).toHaveBeenCalledWith(okCode);
     });
 
-    test("Then it should respond with property pokemon assigned to 'Pokamion'", async () => {
-      UserPokemon.find = jest.fn().mockReturnValue({
-        limit: jest.fn().mockReturnValue({
-          skip: jest.fn().mockReturnValue({
-            exec: jest.fn().mockResolvedValue(mockUserPokemon),
-          }),
-        }),
-      });
+    test("Then it should respond with property pokemon assigned to an empty object", async () => {
+      const expectedEmptyObject = { pokemon: {} };
 
-      UserPokemon.countDocuments = jest.fn().mockImplementation(() => ({
-        exec: jest.fn().mockResolvedValue(totalPokemon),
+      UserPokemon.find = jest.fn().mockImplementationOnce(() => ({
+        exec: jest.fn().mockResolvedValue({}),
       }));
 
       await getUserPokemonList(
@@ -74,10 +58,7 @@ describe("Given the getUserPokemonList controller", () => {
         mockNext
       );
 
-      expect(mockRes.json).toHaveBeenCalledWith({
-        pokemon: mockUserPokemon,
-        totalPokemon,
-      });
+      expect(mockRes.json).toHaveBeenCalledWith(expectedEmptyObject);
     });
   });
 
@@ -89,16 +70,8 @@ describe("Given the getUserPokemonList controller", () => {
         "Couldn't retreive Pokemon"
       );
 
-      UserPokemon.find = jest.fn().mockReturnValue({
-        limit: jest.fn().mockReturnValue({
-          skip: jest.fn().mockReturnValue({
-            exec: jest.fn().mockRejectedValue(expectedError),
-          }),
-        }),
-      });
-
-      UserPokemon.countDocuments = jest.fn().mockImplementation(() => ({
-        exec: jest.fn().mockResolvedValue(totalPokemon),
+      UserPokemon.find = jest.fn().mockImplementationOnce(() => ({
+        exec: jest.fn().mockRejectedValue(expectedError),
       }));
 
       await getUserPokemonList(
@@ -115,16 +88,8 @@ describe("Given the getUserPokemonList controller", () => {
     test("The it should respond with status 200 and all pokemon with type water", async () => {
       mockReq.query!.type = "Water";
 
-      UserPokemon.find = jest.fn().mockReturnValue({
-        limit: jest.fn().mockReturnValue({
-          skip: jest.fn().mockReturnValue({
-            exec: jest.fn().mockResolvedValue(mockUserPokemon),
-          }),
-        }),
-      });
-
-      UserPokemon.countDocuments = jest.fn().mockImplementation(() => ({
-        exec: jest.fn().mockResolvedValue(totalPokemon),
+      UserPokemon.find = jest.fn().mockImplementationOnce(() => ({
+        exec: jest.fn().mockResolvedValue(mockUserPokemon),
       }));
 
       await getUserPokemonList(
@@ -134,10 +99,7 @@ describe("Given the getUserPokemonList controller", () => {
       );
 
       expect(mockRes.status).toHaveBeenCalledWith(okCode);
-      expect(mockRes.json).toHaveBeenCalledWith({
-        pokemon: mockUserPokemon,
-        totalPokemon,
-      });
+      expect(mockRes.json).toHaveBeenCalledWith({ pokemon: mockUserPokemon });
     });
   });
 });
