@@ -17,28 +17,15 @@ export const getUserPokemonList = async (
   next: NextFunction
 ) => {
   try {
-    const pagination = {
-      limit: 4,
-      page: +req.query.page! || 1,
-    };
-
     let pokemonList;
 
     if (req.query.type) {
-      pokemonList = await UserPokemon.find({ types: req.query.type })
-        .limit(pagination.limit)
-        .skip((pagination.page - 1) * pagination.limit)
-        .exec();
+      pokemonList = await UserPokemon.find({ types: req.query.type }).exec();
     } else {
-      pokemonList = await UserPokemon.find()
-        .limit(pagination.limit)
-        .skip((pagination.page - 1) * pagination.limit)
-        .exec();
+      pokemonList = await UserPokemon.find().exec();
     }
 
-    const totalPokemon = await UserPokemon.countDocuments().exec();
-
-    res.status(okCode).json({ pokemon: pokemonList, totalPokemon });
+    res.status(okCode).json({ pokemon: pokemonList });
   } catch (error: unknown) {
     const getPokemonError = new CustomError(
       (error as Error).message,
