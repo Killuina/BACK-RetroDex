@@ -19,6 +19,7 @@ export const getUserPokemonList = async (
 ) => {
   try {
     let pokemonList;
+
     if (
       req.query.type === PokemonTypes.bug ||
       req.query.type === PokemonTypes.dark ||

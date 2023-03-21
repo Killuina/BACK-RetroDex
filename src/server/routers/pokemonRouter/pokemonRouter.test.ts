@@ -8,6 +8,7 @@ import { mockUserPokemon } from "../../../mocks/pokemonMocks";
 import { paths } from "../../paths/paths";
 import statusCodes from "../../utils/statusCodes";
 import UserPokemon from "../../../database/models/UserPokemon";
+import { PokemonTypes } from "../../controllers/pokemonControllers/types";
 
 const authorizationHeader =
   "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2ZhMTEzY2RhNTJkZmYyOGIyNjFlMGEiLCJ1c2VybmFtZSI6Ik1hbm9sbyIsImlhdCI6MTY3OTI0MDAzMSwiZXhwIjoxNjc5NDEyODMxfQ.GF498WuPFpwITeYtLHtrRjqe7NPUmOG4GGhPAuAthig";
@@ -45,10 +46,25 @@ afterEach(async () => {
 });
 
 describe("Given the GET /pokemon endpoint", () => {
-  describe("When it receives a request with authorization header and there is one Pokemon on the database", () => {
+  describe("When it receives a request and there is one Pokemon on the database", () => {
     test("Then it should respond with okCode and the requested list of Pokemon", async () => {
       const expectedListLength = 1;
       const response = await request(app).get(pokemonPath).expect(okCode);
+
+      expect(response.body).toHaveProperty("pokemon");
+      expect(response.body.pokemon).toHaveLength(expectedListLength);
+    });
+  });
+
+  describe("When it receives a request to filter by containing type 'Water' and there is one Pokemon on the database that matches", () => {
+    test("Then it should respond with okCode and the requested pokemon", async () => {
+      await UserPokemon.create(mockUserPokemon);
+
+      const expectedListLength = 1;
+      const response = await request(app)
+        .get(pokemonPath)
+        .query({ type: PokemonTypes.water })
+        .expect(okCode);
 
       expect(response.body).toHaveProperty("pokemon");
       expect(response.body.pokemon).toHaveLength(expectedListLength);
