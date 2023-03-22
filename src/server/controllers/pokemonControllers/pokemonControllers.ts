@@ -8,7 +8,7 @@ import statusCodes from "../../utils/statusCodes.js";
 const {
   success: { okCode, resourceCreated },
   serverError: { internalServer },
-  clientError: { badRequest },
+  clientError: { badRequest, conflict },
 } = statusCodes;
 
 export const getUserPokemonList = async (
@@ -86,7 +86,7 @@ export const createUserPokemon = async (
     const creatingPokemonError = (error as Error).message.includes("E11000")
       ? new CustomError(
           (error as Error).message,
-          badRequest,
+          conflict,
           "Name already exists"
         )
       : new CustomError(
