@@ -1,0 +1,189 @@
+{
+  "info": {
+    "_postman_id": "27f96b01-7d7b-477d-9eb2-fa9c1c4b3789",
+    "name": "Pokedex endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "25531124"
+  },
+  "item": [
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"username\": \"Manolo\",\r\n    \"password\": \"manolo1234\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://cristina-jimenez-final-project-202301-bcn.onrender.com/users/login",
+          "protocol": "https",
+          "host": [
+            "cristina-jimenez-final-project-202301-bcn",
+            "onrender",
+            "com"
+          ],
+          "path": ["users", "login"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create user Pokémon",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2ZhMTEzY2RhNTJkZmYyOGIyNjFlMGEiLCJ1c2VybmFtZSI6Ik1hbm9sbyIsImlhdCI6MTY3OTQ4MzQ4MCwiZXhwIjoxNjgwMDg4MjgwfQ.XBtG9yvZSgsr85KX6jZnYoUMdlNAMiAOuBI6Dwu7zAM",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "",
+            "type": "text",
+            "disabled": true
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "image",
+              "type": "file",
+              "src": "/C:/Users/Crist/Downloads/Altaria-Pokemon-Clip-Art-Transparent-File.gif"
+            },
+            {
+              "key": "name",
+              "value": "Altaria",
+              "type": "text"
+            },
+            {
+              "key": "firstType",
+              "value": "Dragon",
+              "type": "text"
+            },
+            {
+              "key": "secondType",
+              "value": "Fairy",
+              "type": "text"
+            },
+            {
+              "key": "ability",
+              "value": "Pressure",
+              "type": "text"
+            },
+            {
+              "key": "height",
+              "value": "3",
+              "type": "text"
+            },
+            {
+              "key": "weight",
+              "value": "20",
+              "type": "text"
+            },
+            {
+              "key": "baseExp",
+              "value": "159",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "https://cristina-jimenez-final-project-202301-bcn.onrender.com/pokemon/create",
+          "protocol": "https",
+          "host": [
+            "cristina-jimenez-final-project-202301-bcn",
+            "onrender",
+            "com"
+          ],
+          "path": ["pokemon", "create"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Pokémon list",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://cristina-jimenez-final-project-202301-bcn.onrender.com/pokemon",
+          "protocol": "https",
+          "host": [
+            "cristina-jimenez-final-project-202301-bcn",
+            "onrender",
+            "com"
+          ],
+          "path": ["pokemon"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Pokémon list filtered by type",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://cristina-jimenez-final-project-202301-bcn.onrender.com/pokemon",
+          "protocol": "https",
+          "host": [
+            "cristina-jimenez-final-project-202301-bcn",
+            "onrender",
+            "com"
+          ],
+          "path": ["pokemon"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get one Pokémon by Id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://cristina-jimenez-final-project-202301-bcn.onrender.com/pokemon/640f22f29ef06cb2185232e3",
+          "protocol": "https",
+          "host": [
+            "cristina-jimenez-final-project-202301-bcn",
+            "onrender",
+            "com"
+          ],
+          "path": ["pokemon", "640f22f29ef06cb2185232e3"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete one UserPokémon by Id",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "https://cristina-jimenez-final-project-202301-bcn.onrender.com/delete/641707c5d4600a1d560f140b",
+          "protocol": "https",
+          "host": [
+            "cristina-jimenez-final-project-202301-bcn",
+            "onrender",
+            "com"
+          ],
+          "path": ["delete", "641707c5d4600a1d560f140b"]
+        }
+      },
+      "response": []
+    }
+  ]
+}
