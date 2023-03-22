@@ -17,13 +17,9 @@ export const getUserPokemonList = async (
   next: NextFunction
 ) => {
   try {
-    let pokemonList;
-
-    if (req.query.type) {
-      pokemonList = await UserPokemon.find({ types: req.query.type }).exec();
-    } else {
-      pokemonList = await UserPokemon.find().exec();
-    }
+    const pokemonList = req.query.type
+      ? await UserPokemon.find({ types: req.query.type }).exec()
+      : await UserPokemon.find().exec();
 
     res.status(okCode).json({ pokemon: pokemonList });
   } catch (error: unknown) {
