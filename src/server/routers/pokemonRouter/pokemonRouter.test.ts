@@ -151,7 +151,7 @@ describe("Given the DELETE /pokemon/:userPokemonId endpoint", () => {
   });
 });
 
-describe("Given a POST /games/create endpoint", () => {
+describe("Given a POST /pokemon/create endpoint", () => {
   describe("When it receives a request with all needed data to create a Pokemon named 'Pokamion", () => {
     test("Then it should respond with resource created status code and all Pokamion data, including its name'", async () => {
       const response = await request(app)
@@ -175,11 +175,34 @@ describe("Given a POST /games/create endpoint", () => {
   });
 
   describe("When it receives a request with no name field", () => {
-    test("Then it should respond with status 400 and message: 'Pokamion created!'", async () => {
+    test("Then it should respond with status 400 and message: 'Validation Failed'", async () => {
       const expectedError = "Validation Failed";
 
       const response = await request(app)
         .post(`${pokemonPath}${createPokemon}`)
+        .set("Authorization", authorizationHeader)
+        .field("ability", mockUserPokemon.ability)
+        .field("firstType", mockUserPokemon.types[0])
+        .field("secondType", mockUserPokemon.types[1])
+        .field("height", mockUserPokemon.height)
+        .field("weight", mockUserPokemon.weight)
+        .field("baseExp", mockUserPokemon.baseExp)
+        .attach("image", "testMedia/test.png")
+        .expect(badRequest);
+
+      expect(response.body).toHaveProperty("error", expectedError);
+    });
+  });
+
+  describe("When it receives a request with a name that already exists in the database", () => {
+    test("Then it should respond with bad requests status and message: 'Name already exists'", async () => {
+      await UserPokemon.create(mockUserPokemon);
+
+      const expectedError = "Name already exists";
+
+      const response = await request(app)
+        .post(`${pokemonPath}${createPokemon}`)
+        .field("name", mockUserPokemon.name)
         .set("Authorization", authorizationHeader)
         .field("ability", mockUserPokemon.ability)
         .field("firstType", mockUserPokemon.types[0])

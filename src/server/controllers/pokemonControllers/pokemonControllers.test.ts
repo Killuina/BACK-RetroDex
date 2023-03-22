@@ -253,6 +253,26 @@ describe("Given the createUserPokemon controller", () => {
         );
       });
     });
+
+    describe("When it receives a request with a Pokémon name that already exists on the database", () => {
+      test("Then it should call the received next function with an error with message 'Name already exists'", async () => {
+        const expectedDatabaseError = new Error(
+          `E11000 duplicate key error collection: pokedex.userPokemon index: name_1 dup key: { name: ${mockUserPokemon.name} }`
+        );
+        const expectedErrorMessage = "Name already exists";
+        UserPokemon.create = jest.fn().mockRejectedValue(expectedDatabaseError);
+
+        await createUserPokemon(
+          mockReq as CustomRequest,
+          mockRes as Response,
+          mockNext
+        );
+
+        expect(mockNext).toHaveBeenCalledWith(
+          expect.objectContaining({ publicMessage: expectedErrorMessage })
+        );
+      });
+    });
   });
 });
 

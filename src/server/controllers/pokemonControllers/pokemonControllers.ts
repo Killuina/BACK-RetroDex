@@ -81,15 +81,19 @@ export const createUserPokemon = async (
       types: [userPokemon.firstType, userPokemon.secondType],
       createdBy: userId,
     });
-
     res.status(resourceCreated).json({ pokemon: newUserPokemon });
   } catch (error: unknown) {
-    const creatingPokemonError = new CustomError(
-      (error as Error).message,
-      internalServer,
-      "Error creating Pokémon"
-    );
-
+    const creatingPokemonError = (error as Error).message.includes("E11000")
+      ? new CustomError(
+          (error as Error).message,
+          badRequest,
+          "Name already exists"
+        )
+      : new CustomError(
+          (error as Error).message,
+          internalServer,
+          "Error creating Pokémon"
+        );
     next(creatingPokemonError);
   }
 };
