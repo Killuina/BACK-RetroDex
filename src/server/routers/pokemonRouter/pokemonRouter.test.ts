@@ -13,6 +13,9 @@ import { PokemonTypes } from "../../controllers/pokemonControllers/types";
 const authorizationHeader =
   "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2ZhMTEzY2RhNTJkZmYyOGIyNjFlMGEiLCJ1c2VybmFtZSI6Ik1hbm9sbyIsImlhdCI6MTY3OTQwMzczMCwiZXhwIjoxNjgwMDA4NTMwfQ.yOEQo7goCnEWWJ-7nhTOLnFFBRB6TCuordrrHXD5U9M";
 
+const noBearerAuthorizationHeader =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2ZhMTEzY2RhNTJkZmYyOGIyNjFlMGEiLCJ1c2VybmFtZSI6Ik1hbm9sbyIsImlhdCI6MTY3OTQwMzczMCwiZXhwIjoxNjgwMDA4NTMwfQ.yOEQo7goCnEWWJ-7nhTOLnFFBRB6TCuordrrHXD5U9M";
+
 const {
   pokemon: {
     pokemonPath,
@@ -49,6 +52,7 @@ describe("Given the GET /pokemon endpoint", () => {
   describe("When it receives a request and there is one Pokemon on the database", () => {
     test("Then it should respond with okCode and the requested list of Pokemon", async () => {
       const expectedListLength = 1;
+
       const response = await request(app).get(pokemonPath).expect(okCode);
 
       expect(response.body).toHaveProperty("pokemon");
@@ -56,8 +60,8 @@ describe("Given the GET /pokemon endpoint", () => {
     });
   });
 
-  describe("When it receives a request to filter by containing type 'Water' and there is one Pokemon on the database that matches", () => {
-    test("Then it should respond with okCode and the requested pokemon", async () => {
+  describe("When it receives a request to filter by type 'Water' and there is one Pokemon on the database that matches", () => {
+    test("Then it should respond with okCode and a list with the requested pokemon", async () => {
       await UserPokemon.create(mockUserPokemon);
 
       const expectedListLength = 1;
@@ -73,9 +77,6 @@ describe("Given the GET /pokemon endpoint", () => {
 });
 
 describe("Given the DELETE /pokemon/:userPokemonId endpoint", () => {
-  const noBearerAuthorizationHeader =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2ZhMTEzY2RhNTJkZmYyOGIyNjFlMGEiLCJ1c2VybmFtZSI6Ik1hbm9sbyIsImlhdCI6MTY3OTQwMzczMCwiZXhwIjoxNjgwMDA4NTMwfQ.yOEQo7goCnEWWJ-7nhTOLnFFBRB6TCuordrrHXD5U9M";
-
   describe("When it receives a request to delete 'Pokamion'", () => {
     test("Then it should respond with okCode and message: 'Pokamion' deleted", async () => {
       const { _id: id } = await UserPokemon.create(mockUserPokemon);

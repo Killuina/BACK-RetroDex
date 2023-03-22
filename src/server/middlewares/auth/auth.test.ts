@@ -1,7 +1,7 @@
 import { type Response } from "express";
 import jwt from "jsonwebtoken";
 import { type CustomJwtPayload } from "../../controllers/userControllers/types";
-import { type CustomRequest, type UserId } from "../../types";
+import { type CustomRequest } from "../../types";
 import auth from "./auth";
 
 const mockRes: Partial<Response> = {
