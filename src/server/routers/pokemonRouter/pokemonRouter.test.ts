@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 import { app } from "../..";
 import connectDatabase from "../../../database/connectDatabase";
 import { mockUserPokemon } from "../../../mocks/pokemonMocks";
-import { paths } from "../../paths/paths";
+import { paths } from "../../utils/paths";
 import statusCodes from "../../utils/statusCodes";
 import UserPokemon from "../../../database/models/UserPokemon";
 import { PokemonTypes } from "../../controllers/pokemonControllers/types";
@@ -21,7 +21,7 @@ const {
 } = paths;
 
 const {
-  clientError: { badRequest, forbbiden },
+  clientError: { badRequest, forbbiden, conflict },
   success: { okCode, resourceCreated },
   serverError: { internalServer },
 } = statusCodes;
@@ -211,7 +211,7 @@ describe("Given a POST /pokemon/create endpoint", () => {
         .field("weight", mockUserPokemon.weight)
         .field("baseExp", mockUserPokemon.baseExp)
         .attach("image", "testMedia/test.png")
-        .expect(badRequest);
+        .expect(conflict);
 
       expect(response.body).toHaveProperty("error", expectedError);
     });

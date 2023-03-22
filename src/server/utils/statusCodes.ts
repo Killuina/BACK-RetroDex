@@ -1,17 +1,4 @@
-interface StatusCodes {
-  clientError: {
-    conflict: number;
-    notFound: number;
-    badRequest: number;
-    unauthorized: number;
-    gone: number;
-    forbbiden: number;
-  };
-  serverError: {
-    internalServer: number;
-  };
-  success: { okCode: number; resourceCreated: number };
-}
+import { type StatusCodes } from "./types";
 
 const statusCodes: StatusCodes = {
   clientError: {

@@ -8,7 +8,7 @@ import User from "../../../database/models/User";
 import { type UserStructure, type UserLoginCredentials } from "../../types";
 import { app } from "../..";
 import statusCodes from "../../utils/statusCodes";
-import { paths } from "../../paths/paths";
+import { paths } from "../../utils/paths";
 
 const {
   success: { okCode },

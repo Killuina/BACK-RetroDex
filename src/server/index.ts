@@ -7,7 +7,7 @@ import {
   generalError,
   notFoundError,
 } from "./middlewares/errorMiddlewares/errorMiddlewares.js";
-import { paths } from "./paths/paths.js";
+import { paths } from "./utils/paths.js";
 import { pokemonRouter } from "./routers/pokemonRouter/pokemonRouter.js";
 
 const {

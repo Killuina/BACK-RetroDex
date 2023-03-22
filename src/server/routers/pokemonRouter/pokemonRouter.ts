@@ -11,7 +11,7 @@ import {
   optimizeImage,
   uploadImage,
 } from "../../middlewares/imageMiddlewares/imageMiddlewares.js";
-import { paths } from "../../paths/paths.js";
+import { paths } from "../../utils/paths.js";
 import createUserPokemonValidation from "../../schemas/createUserPokemon.js";
 
 const {
