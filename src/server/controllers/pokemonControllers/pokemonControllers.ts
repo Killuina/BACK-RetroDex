@@ -81,7 +81,6 @@ export const createUserPokemon = async (
       types: [userPokemon.firstType, userPokemon.secondType],
       createdBy: userId,
     });
-
     res.status(resourceCreated).json({ pokemon: newUserPokemon });
   } catch (error: unknown) {
     const creatingPokemonError = (error as Error).message.includes("E11000")
