@@ -11,7 +11,7 @@ import UserPokemon from "../../../database/models/UserPokemon";
 import { PokemonTypes } from "../../controllers/pokemonControllers/types";
 
 const authorizationHeader =
-  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2ZhMTEzY2RhNTJkZmYyOGIyNjFlMGEiLCJ1c2VybmFtZSI6Ik1hbm9sbyIsImlhdCI6MTY3OTQwMzczMCwiZXhwIjoxNjgwMDA4NTMwfQ.yOEQo7goCnEWWJ-7nhTOLnFFBRB6TCuordrrHXD5U9M";
+  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2ZhMTEzY2RhNTJkZmYyOGIyNjFlMGEiLCJ1c2VybmFtZSI6Ik1hbm9sbyIsImlhdCI6MTY4NDQ5MTY3NSwiZXhwIjoxNjg1MDk2NDc1fQ.QdVGgn10dH1_nT6nMtuS3Tr3dHXSTQU8H5FiumfuECk";
 
 const noBearerAuthorizationHeader =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2ZhMTEzY2RhNTJkZmYyOGIyNjFlMGEiLCJ1c2VybmFtZSI6Ik1hbm9sbyIsImlhdCI6MTY3OTQwMzczMCwiZXhwIjoxNjgwMDA4NTMwfQ.yOEQo7goCnEWWJ-7nhTOLnFFBRB6TCuordrrHXD5U9M";
