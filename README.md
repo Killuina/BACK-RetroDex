@@ -5,7 +5,7 @@
 
 ## POKÉDEX
 
-This is an API Rest of userss Pokémon data build using Express and Node.js. Tested using Jest, MongoDb Memory Server and Supertest.
+This is an API Rest of custom Pokémon data build using Express and Node.js. Tested using Jest, MongoDb Memory Server and Supertest.
 
 ## ENDPOINTS
 
