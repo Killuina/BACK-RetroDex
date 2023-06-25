@@ -4,8 +4,14 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { CustomError } from "../../../CustomError/CustomError.js";
 import User from "../../../database/models/User.js";
-import { type UserLoginCredentials } from "../../types";
+import { type UserCredentials, type UserLoginCredentials } from "../../types";
 import { type CustomJwtPayload } from "./types";
+import statusCodes from "../../utils/statusCodes.js";
+
+const {
+  success: { okCode },
+  serverError: { internalServer },
+} = statusCodes;
 
 export const loginUser = async (
   req: Request<
@@ -37,8 +43,40 @@ export const loginUser = async (
       expiresIn: "7d",
     });
 
-    res.status(200).json({ token });
+    res.status(okCode).json({ token });
   } catch (error) {
     next(error);
+  }
+};
+
+export const registerUser = async (
+  req: Request<
+    Record<string, unknown>,
+    Record<string, unknown>,
+    UserCredentials
+  >,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { email, username, password } = req.body;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await User.create({
+      email,
+      username,
+      password: hashedPassword,
+    });
+
+    res.status(okCode).json({ message: `${username} registered!` });
+  } catch {
+    const registerUserError = new CustomError(
+      "Error on the database",
+      internalServer,
+      "Error registering user"
+    );
+
+    next(registerUserError);
   }
 };

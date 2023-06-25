@@ -5,7 +5,7 @@ import request from "supertest";
 import bcrypt from "bcryptjs";
 import connectDatabase from "../../../database/connectDatabase";
 import User from "../../../database/models/User";
-import { type UserStructure, type UserLoginCredentials } from "../../types";
+import { type UserCredentials, type UserLoginCredentials } from "../../types";
 import { app } from "../..";
 import statusCodes from "../../utils/statusCodes";
 import { paths } from "../../utils/paths";
@@ -31,7 +31,7 @@ beforeAll(async () => {
 
   await connectDatabase(mongodbServerUrl);
 
-  const userData: UserStructure = {
+  const userData: UserCredentials = {
     username: "notDiana",
     password: await bcrypt.hash("12345678", 10),
     email: "notDiana@gmail.com",

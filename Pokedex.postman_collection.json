@@ -1,7 +1,7 @@
 {
   "info": {
     "_postman_id": "27f96b01-7d7b-477d-9eb2-fa9c1c4b3789",
-    "name": "Pokedex endpoints",
+    "name": "Pokedex",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "25531124"
   },
@@ -21,13 +21,9 @@
           }
         },
         "url": {
-          "raw": "https://cristina-jimenez-final-project-202301-bcn.onrender.com/users/login",
+          "raw": "https://pokedex-y011.onrender.com/users/login",
           "protocol": "https",
-          "host": [
-            "cristina-jimenez-final-project-202301-bcn",
-            "onrender",
-            "com"
-          ],
+          "host": ["pokedex-y011", "onrender", "com"],
           "path": ["users", "login"]
         }
       },
@@ -137,13 +133,9 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "https://cristina-jimenez-final-project-202301-bcn.onrender.com/pokemon",
+          "raw": "https://pokedex-y011.onrender.com/pokemon",
           "protocol": "https",
-          "host": [
-            "cristina-jimenez-final-project-202301-bcn",
-            "onrender",
-            "com"
-          ],
+          "host": ["pokedex-y011", "onrender", "com"],
           "path": ["pokemon"]
         }
       },
@@ -155,13 +147,9 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "https://cristina-jimenez-final-project-202301-bcn.onrender.com/pokemon/640f22f29ef06cb2185232e3",
+          "raw": "https://pokedex-y011.onrender.com/pokemon/640f22f29ef06cb2185232e3",
           "protocol": "https",
-          "host": [
-            "cristina-jimenez-final-project-202301-bcn",
-            "onrender",
-            "com"
-          ],
+          "host": ["pokedex-y011", "onrender", "com"],
           "path": ["pokemon", "640f22f29ef06cb2185232e3"]
         }
       },
@@ -173,13 +161,9 @@
         "method": "DELETE",
         "header": [],
         "url": {
-          "raw": "https://cristina-jimenez-final-project-202301-bcn.onrender.com/delete/641707c5d4600a1d560f140b",
+          "raw": "https://pokedex-y011.onrender.com/delete/641707c5d4600a1d560f140b",
           "protocol": "https",
-          "host": [
-            "cristina-jimenez-final-project-202301-bcn",
-            "onrender",
-            "com"
-          ],
+          "host": ["pokedex-y011", "onrender", "com"],
           "path": ["delete", "641707c5d4600a1d560f140b"]
         }
       },

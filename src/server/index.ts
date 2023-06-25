@@ -8,7 +8,7 @@ import {
   notFoundError,
 } from "./middlewares/errorMiddlewares/errorMiddlewares.js";
 import { paths } from "./utils/paths.js";
-import { pokemonRouter } from "./routers/pokemonRouter/pokemonRouter.js";
+import pokemonRouter from "./routers/pokemonRouter/pokemonRouter.js";
 
 const {
   users: { usersPath },
