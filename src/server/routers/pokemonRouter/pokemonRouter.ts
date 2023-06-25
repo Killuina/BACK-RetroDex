@@ -20,7 +20,7 @@ const {
   },
 } = paths;
 
-export const pokemonRouter = Router();
+const pokemonRouter = Router();
 
 pokemonRouter.get("/", getUserPokemonList);
 pokemonRouter.delete(deleteUserPokemon, auth, deleteUserPokemonById);
@@ -34,3 +34,5 @@ pokemonRouter.post(
   createUserPokemon
 );
 pokemonRouter.get(getOnePokemon, getPokemonById);
+
+export default pokemonRouter;

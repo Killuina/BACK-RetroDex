@@ -5,6 +5,7 @@ export const paths: Paths = {
     usersPath: "/users",
     endpoints: {
       login: "/login",
+      register: "/register",
     },
   },
 

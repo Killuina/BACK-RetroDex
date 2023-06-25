@@ -3,9 +3,17 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import User from "../../../database/models/User";
-import { type UserLoginCredentials } from "../../types";
+import { type UserCredentials, type UserLoginCredentials } from "../../types";
 import { CustomError } from "../../../CustomError/CustomError";
-import { loginUser } from "./userControllers";
+import { loginUser, registerUser } from "./userControllers";
+import statusCodes from "../../utils/statusCodes";
+import { mockUserCredentials } from "../../../mocks/userMocks";
+
+const {
+  success: { okCode },
+  clientError: { unauthorized },
+  serverError: { internalServer },
+} = statusCodes;
 
 const res: Partial<Response> = {
   status: jest.fn().mockReturnThis(),
@@ -32,7 +40,7 @@ describe("Given a loginUser controller", () => {
     test("Then it should call its next method with a status 401 and the messages 'Wrong username' and 'Wrong credentials'", async () => {
       const expectedError = new CustomError(
         "Wrong username",
-        401,
+        unauthorized,
         "Wrong credentials"
       );
       req.body = mockUserLoginCredentials;
@@ -59,7 +67,7 @@ describe("Given a loginUser controller", () => {
     test("Then it should call its next method with a status 401 and the messages 'Wrong password' and 'Wrong credentials'", async () => {
       const expectedError = new CustomError(
         "Wrong password",
-        401,
+        unauthorized,
         "Wrong credentials"
       );
       req.body = mockUserLoginCredentials;
@@ -89,10 +97,10 @@ describe("Given a loginUser controller", () => {
 
   describe("When the database responds with an error", () => {
     test("Then it should call its next method", async () => {
-      const errorDatabase = new Error("error");
+      const databaseError = new Error("Error");
 
       User.findOne = jest.fn().mockImplementationOnce(() => ({
-        exec: jest.fn().mockRejectedValue(errorDatabase),
+        exec: jest.fn().mockRejectedValue(databaseError),
       }));
 
       await loginUser(
@@ -105,7 +113,7 @@ describe("Given a loginUser controller", () => {
         next
       );
 
-      expect(next).toHaveBeenCalledWith(errorDatabase);
+      expect(next).toHaveBeenCalledWith(databaseError);
     });
   });
 
@@ -114,7 +122,6 @@ describe("Given a loginUser controller", () => {
     const expectedResponseBody = { token: expectedToken };
 
     test("Then it should call its status method with 200", async () => {
-      const expectedStatusCode = 200;
       req.body = mockUserLoginCredentials;
 
       User.findOne = jest.fn().mockImplementationOnce(() => ({
@@ -135,7 +142,7 @@ describe("Given a loginUser controller", () => {
         res as Response,
         next
       );
-      expect(res.status).toHaveBeenCalledWith(expectedStatusCode);
+      expect(res.status).toHaveBeenCalledWith(okCode);
     });
 
     test("Then it should call its json method with a token", async () => {
@@ -161,6 +168,61 @@ describe("Given a loginUser controller", () => {
       );
 
       expect(res.json).toHaveBeenCalledWith(expectedResponseBody);
+    });
+  });
+});
+
+describe("Given the registerUser controller", () => {
+  const req: Partial<
+    Request<Record<string, unknown>, Record<string, unknown>, UserCredentials>
+  > = {};
+
+  describe("When it receives a request with email: 'test@test.com', username: 'test', and password: 'test1234'", () => {
+    test("Then it should call its status method with okCode and json with message 'test registered!'", async () => {
+      const expectedResponseBody = {
+        message: `${mockUserCredentials.username} registered!`,
+      };
+
+      req.body = mockUserCredentials;
+
+      User.create = jest.fn().mockResolvedValue(mockUserCredentials);
+
+      await registerUser(
+        req as Request<
+          Record<string, unknown>,
+          Record<string, unknown>,
+          UserCredentials
+        >,
+        res as Response,
+        next
+      );
+
+      expect(res.status).toHaveBeenCalledWith(okCode);
+      expect(res.json).toHaveBeenCalledWith(expectedResponseBody);
+    });
+  });
+
+  describe("When it receives a request to register an user and there's an error on the database", () => {
+    test("Then it should call next with an error with message 'Error registering user'", async () => {
+      const registerUserError = new CustomError(
+        "Error on the database",
+        internalServer,
+        "Error registering user"
+      );
+
+      User.create = jest.fn().mockRejectedValue(registerUserError);
+
+      await registerUser(
+        req as Request<
+          Record<string, unknown>,
+          Record<string, unknown>,
+          UserCredentials
+        >,
+        res as Response,
+        next
+      );
+
+      expect(next).toHaveBeenCalledWith(registerUserError);
     });
   });
 });

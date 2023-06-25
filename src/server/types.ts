@@ -5,7 +5,7 @@ export interface UserLoginCredentials {
   username: string;
 }
 
-export interface UserStructure extends UserLoginCredentials {
+export interface UserCredentials extends UserLoginCredentials {
   email: string;
 }
 
