@@ -24,6 +24,7 @@ export const loginUser = async (
 ) => {
   try {
     const { password, username }: UserLoginCredentials = req.body;
+
     const user = await User.findOne({ username }).exec();
 
     if (!user) {
@@ -70,9 +71,9 @@ export const registerUser = async (
     });
 
     res.status(resourceCreated).json({ message: `${username} registered!` });
-  } catch {
+  } catch (error: unknown) {
     const registerUserError = new CustomError(
-      "Error on the database",
+      (error as Error).message,
       internalServer,
       "Error registering user"
     );
