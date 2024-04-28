@@ -4,8 +4,7 @@ const registerUserSchema = {
   body: Joi.object({
     email: Joi.string()
       .regex(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/)
-      .required()
-      .max(20),
+      .required(),
     username: Joi.string().required().max(12),
     password: Joi.string().required().min(8).max(20),
   }),
