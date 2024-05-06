@@ -26,6 +26,7 @@ const auth = (req: CustomRequest, res: Response, next: NextFunction) => {
       token,
       process.env.JWT_SECRET!
     ) as CustomJwtPayload;
+
     req.userId = id;
 
     next();

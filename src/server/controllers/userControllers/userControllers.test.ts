@@ -154,6 +154,7 @@ describe("Given a loginUser controller", () => {
           _id: new mongoose.Types.ObjectId(),
         }),
       }));
+
       bcrypt.compare = jest.fn().mockResolvedValue(true);
       jwt.sign = jest.fn().mockReturnValue(expectedToken);
 

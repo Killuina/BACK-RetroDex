@@ -8,7 +8,7 @@ import {
   createUserPokemon,
   deleteUserPokemonById,
   getPokemonById,
-  getUserPokemonList,
+  getAllUsersPokemonList,
 } from "./pokemonControllers";
 
 const {
@@ -23,20 +23,23 @@ describe("Given the getUserPokemon controller", () => {
     status: jest.fn().mockReturnThis(),
     json: jest.fn(),
   };
+
   const mockReq: Partial<Request> = {
     query: {
       types: "",
     },
   };
+
   const mockNext: NextFunction = jest.fn();
 
   describe("When it receives a request", () => {
     test("Then it should respond with a status code 200", async () => {
       UserPokemon.find = jest.fn().mockImplementationOnce(() => ({
+        populate: jest.fn().mockReturnThis(),
         exec: jest.fn().mockResolvedValue({}),
       }));
 
-      await getUserPokemonList(
+      await getAllUsersPokemonList(
         mockReq as Request,
         mockRes as Response,
         mockNext
@@ -49,10 +52,11 @@ describe("Given the getUserPokemon controller", () => {
       const expectedEmptyObject = { pokemon: {} };
 
       UserPokemon.find = jest.fn().mockImplementationOnce(() => ({
+        populate: jest.fn().mockReturnThis(),
         exec: jest.fn().mockResolvedValue({}),
       }));
 
-      await getUserPokemonList(
+      await getAllUsersPokemonList(
         mockReq as Request,
         mockRes as Response,
         mockNext
@@ -71,10 +75,11 @@ describe("Given the getUserPokemon controller", () => {
       );
 
       UserPokemon.find = jest.fn().mockImplementationOnce(() => ({
+        populate: jest.fn().mockReturnThis(),
         exec: jest.fn().mockRejectedValue(expectedError),
       }));
 
-      await getUserPokemonList(
+      await getAllUsersPokemonList(
         mockReq as Request,
         mockRes as Response,
         mockNext
@@ -89,10 +94,11 @@ describe("Given the getUserPokemon controller", () => {
       mockReq.query!.type = "Water";
 
       UserPokemon.find = jest.fn().mockImplementationOnce(() => ({
+        populate: jest.fn().mockReturnThis(),
         exec: jest.fn().mockResolvedValue(mockUserPokemon),
       }));
 
-      await getUserPokemonList(
+      await getAllUsersPokemonList(
         mockReq as Request,
         mockRes as Response,
         mockNext

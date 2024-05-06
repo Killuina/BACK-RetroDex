@@ -4,6 +4,7 @@ import { CustomError } from "../../../CustomError/CustomError.js";
 import UserPokemon from "../../../database/models/UserPokemon.js";
 import { type UserPokemonData, type CustomRequest } from "../../types.js";
 import statusCodes from "../../utils/statusCodes.js";
+import { type UserPokemonListQuery } from "./types.js";
 
 const {
   success: { okCode, resourceCreated },
@@ -12,14 +13,48 @@ const {
 } = statusCodes;
 
 export const getUserPokemonList = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = new mongoose.Types.ObjectId(req.userId);
+
+    const userPokemonListQuery: UserPokemonListQuery = {
+      createdBy: userId,
+    };
+
+    if (req.query.type && typeof req.query.type === "string") {
+      userPokemonListQuery.types = req.query.type;
+    }
+
+    const pokemonList = await UserPokemon.find(userPokemonListQuery).populate(
+      "createdBy"
+    );
+
+    res.status(okCode).json({ pokemon: pokemonList });
+  } catch (error) {
+    const getPokemonError = new CustomError(
+      (error as Error).message,
+      internalServer,
+      "Couldn't retreive Pokémon"
+    );
+
+    next(getPokemonError);
+  }
+};
+
+export const getAllUsersPokemonList = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const pokemonList = req.query.type
-      ? await UserPokemon.find({ types: req.query.type }).exec()
-      : await UserPokemon.find().exec();
+      ? await UserPokemon.find({ types: req.query.type })
+          .populate("createdBy")
+          .exec()
+      : await UserPokemon.find().populate("createdBy").exec();
 
     res.status(okCode).json({ pokemon: pokemonList });
   } catch (error: unknown) {
@@ -79,7 +114,7 @@ export const createUserPokemon = async (
     const newUserPokemon = await UserPokemon.create({
       ...userPokemon,
       types: [userPokemon.firstType, userPokemon.secondType],
-      createdBy: userId,
+      createdBy: new mongoose.Types.ObjectId(userId),
     });
 
     res.status(resourceCreated).json({ pokemon: newUserPokemon });

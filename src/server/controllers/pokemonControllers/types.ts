@@ -1,3 +1,5 @@
+import type mongoose from "mongoose";
+
 export enum PokemonTypes {
   fire = "Fire",
   water = "Water",
@@ -17,4 +19,9 @@ export enum PokemonTypes {
   rock = "Rock",
   steel = "Steel",
   normal = "Normal",
+}
+
+export interface UserPokemonListQuery {
+  createdBy: mongoose.Types.ObjectId;
+  types?: string;
 }
