@@ -28,9 +28,10 @@ export const getUserPokemonList = async (
       userPokemonListQuery.types = req.query.type;
     }
 
-    const pokemonList = await UserPokemon.find(userPokemonListQuery).populate(
-      "createdBy"
-    );
+    const pokemonList = await UserPokemon.find(userPokemonListQuery).populate({
+      path: "createdBy",
+      select: "username",
+    });
 
     res.status(okCode).json({ pokemon: pokemonList });
   } catch (error) {
@@ -52,9 +53,17 @@ export const getAllUsersPokemonList = async (
   try {
     const pokemonList = req.query.type
       ? await UserPokemon.find({ types: req.query.type })
-          .populate("createdBy")
+          .populate({
+            path: "createdBy",
+            select: "username",
+          })
           .exec()
-      : await UserPokemon.find().populate("createdBy").exec();
+      : await UserPokemon.find()
+          .populate({
+            path: "createdBy",
+            select: "username",
+          })
+          .exec();
 
     res.status(okCode).json({ pokemon: pokemonList });
   } catch (error: unknown) {
