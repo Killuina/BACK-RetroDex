@@ -33,13 +33,14 @@ const setupTestAuthorizationData = async () => {
   return {
     authorizationHeader,
     noBearerAuthorizationHeader,
+    userId: _id,
   };
 };
 
 const {
   pokemon: {
     pokemonPath,
-    endpoints: { createPokemon },
+    endpoints: { createPokemon, getUserPokemon },
   },
 } = paths;
 
@@ -89,6 +90,45 @@ describe("Given the GET /pokemon endpoint", () => {
       const response = await request(app)
         .get(pokemonPath)
         .query({ type: PokemonTypes.water })
+        .expect(okCode);
+
+      expect(response.body).toHaveProperty("pokemon");
+      expect(response.body.pokemon).toHaveLength(expectedListLength);
+    });
+  });
+});
+
+describe("Given the GET /pokemon/users endoint", () => {
+  describe("When it receives a request and theres pokemon created by the user on DDBB", () => {
+    test("Then it should respond with okCode and the requested list of Pokemon", async () => {
+      const expectedListLength = 1;
+      const { authorizationHeader, userId } =
+        await setupTestAuthorizationData();
+
+      await UserPokemon.create({ ...mockUserPokemon, createdBy: userId });
+
+      const response = await request(app)
+        .get(`${pokemonPath}${getUserPokemon}`)
+        .set("Authorization", authorizationHeader)
+        .expect(okCode);
+
+      expect(response.body).toHaveProperty("pokemon");
+      expect(response.body.pokemon).toHaveLength(expectedListLength);
+    });
+  });
+
+  describe("When it receives a request with filter 'Water' and theres pokemon created by the user on DDBB", () => {
+    test("Then it should respond with okCode and the requested list of Pokemon", async () => {
+      const expectedListLength = 1;
+      const { authorizationHeader, userId } =
+        await setupTestAuthorizationData();
+
+      await UserPokemon.create({ ...mockUserPokemon, createdBy: userId });
+
+      const response = await request(app)
+        .get(`${pokemonPath}${getUserPokemon}`)
+        .query({ type: PokemonTypes.water })
+        .set("Authorization", authorizationHeader)
         .expect(okCode);
 
       expect(response.body).toHaveProperty("pokemon");

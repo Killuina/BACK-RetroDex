@@ -9,6 +9,7 @@ export interface Paths {
   pokemon: {
     pokemonPath: string;
     endpoints: {
+      getUserPokemon: string;
       deleteUserPokemon: string;
       createPokemon: string;
       getOnePokemon: string;
