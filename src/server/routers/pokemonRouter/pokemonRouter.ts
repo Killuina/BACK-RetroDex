@@ -23,6 +23,7 @@ const {
       createPokemon,
       getOnePokemon,
       getUserPokemon,
+      editUserPokemon,
     },
   },
 } = paths;
@@ -30,13 +31,17 @@ const {
 const pokemonRouter = Router();
 
 pokemonRouter.get("/", getUserPokemonValidation, getAllUsersPokemonList);
+
 pokemonRouter.get(
   getUserPokemon,
   getUserPokemonValidation,
   auth,
   getUserPokemonList
 );
+pokemonRouter.get(getOnePokemon, getPokemonById);
+
 pokemonRouter.delete(deleteUserPokemon, auth, deleteUserPokemonById);
+
 pokemonRouter.post(
   createPokemon,
   auth,
@@ -46,6 +51,15 @@ pokemonRouter.post(
   backupImage,
   createUserPokemon
 );
-pokemonRouter.get(getOnePokemon, getPokemonById);
+
+pokemonRouter.post(
+  editUserPokemon,
+  auth,
+  uploadImage,
+  createUserPokemonValidation,
+  optimizeImage,
+  backupImage,
+  createUserPokemon
+);
 
 export default pokemonRouter;

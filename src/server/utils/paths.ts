@@ -16,6 +16,7 @@ export const paths: Paths = {
       deleteUserPokemon: "/delete/:userPokemonId",
       createPokemon: "/create",
       getOnePokemon: "/:pokemonId",
+      editUserPokemon: "edit/:userPokemonId",
     },
   },
 };
