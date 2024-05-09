@@ -25,10 +25,16 @@ export const optimizeImage = async (
       pokemonImageName!,
       path.extname(pokemonImageName!)
     )}`;
+    // If source image is .webp, no need to convert
+    const imageDestinationPath =
+      path.extname(pokemonImageName!) === ".webp"
+        ? path.join("uploads", basePath)
+        : path.join("uploads", `${basePath}.webp`);
+
     await sharp(path.join("uploads", pokemonImageName!))
       .resize(120, 120, { fit: "cover" })
       .webp({ quality: 100 })
-      .toFile(path.join("uploads", `${basePath}.webp`));
+      .toFile(imageDestinationPath);
 
     req.file!.filename = `${basePath}.webp`;
 

@@ -18,6 +18,7 @@ export const storage = multer.diskStorage({
     setFilename(null, `${uniquePrefix}-${file.fieldname}${extension}`);
   },
 });
+
 export const upload = multer({
   storage,
   limits: { fileSize: 5000000, fieldNameSize: 15 },
