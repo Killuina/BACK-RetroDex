@@ -20,8 +20,3 @@ export enum PokemonTypes {
   steel = "Steel",
   normal = "Normal",
 }
-
-export interface UserPokemonListQuery {
-  createdBy: mongoose.Types.ObjectId;
-  types?: string;
-}
