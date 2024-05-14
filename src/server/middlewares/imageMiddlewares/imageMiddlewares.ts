@@ -19,24 +19,29 @@ export const optimizeImage = async (
   next: NextFunction
 ) => {
   try {
+    if (!req.file) {
+      next();
+      return;
+    }
+
     const pokemonImageName = req.file?.filename;
 
     const basePath = `${path.basename(
-      pokemonImageName!,
-      path.extname(pokemonImageName!)
+      pokemonImageName,
+      path.extname(pokemonImageName)
     )}`;
     // If source image is .webp, no need to convert
     const imageDestinationPath =
-      path.extname(pokemonImageName!) === ".webp"
+      path.extname(pokemonImageName) === ".webp"
         ? path.join("uploads", basePath)
         : path.join("uploads", `${basePath}.webp`);
 
-    await sharp(path.join("uploads", pokemonImageName!))
+    await sharp(path.join("uploads", pokemonImageName))
       .resize(120, 120, { fit: "cover" })
       .webp({ quality: 100 })
       .toFile(imageDestinationPath);
 
-    req.file!.filename = `${basePath}.webp`;
+    req.file.filename = `${basePath}.webp`;
 
     next();
   } catch (error: unknown) {
@@ -55,14 +60,19 @@ export const backupImage = async (
   next: NextFunction
 ) => {
   try {
+    if (!req.file) {
+      next();
+      return;
+    }
+
     const pokemonImage = req.file?.filename;
 
-    const pokemonImageUrl = path.join("uploads", pokemonImage!);
+    const pokemonImageUrl = path.join("uploads", pokemonImage);
 
     const backupPokemonImage = await fs.readFile(pokemonImageUrl);
 
     const { data, error } = await bucket.upload(
-      pokemonImage!,
+      pokemonImage,
       backupPokemonImage
     );
 
@@ -76,7 +86,7 @@ export const backupImage = async (
 
     const {
       data: { publicUrl },
-    } = bucket.getPublicUrl(pokemonImage!);
+    } = bucket.getPublicUrl(pokemonImage);
 
     req.body.imageUrl = pokemonImageUrl;
     req.body.backupImageUrl = publicUrl;
