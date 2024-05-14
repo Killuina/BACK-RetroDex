@@ -1,10 +1,13 @@
 import { type NextFunction, type Request, type Response } from "express";
-import mongoose from "mongoose";
+import mongoose, { type FilterQuery } from "mongoose";
 import { CustomError } from "../../../CustomError/CustomError.js";
 import UserPokemon from "../../../database/models/UserPokemon.js";
-import { type UserPokemonData, type CustomRequest } from "../../types.js";
+import {
+  type UserPokemonData,
+  type CustomRequest,
+  type UserPokemonStructure,
+} from "../../types.js";
 import statusCodes from "../../utils/statusCodes.js";
-import { type UserPokemonListQuery } from "./types.js";
 
 const {
   success: { okCode, resourceCreated },
@@ -20,12 +23,17 @@ export const getUserPokemonList = async (
   try {
     const userId = new mongoose.Types.ObjectId(req.userId);
 
-    const userPokemonListQuery: UserPokemonListQuery = {
+    const userPokemonListQuery: FilterQuery<UserPokemonStructure> = {
       createdBy: userId,
     };
 
-    if (req.query.type && typeof req.query.type === "string") {
-      userPokemonListQuery.types = req.query.type;
+    if (req.query.type) {
+      const pokemonType = req.query.type;
+
+      userPokemonListQuery.$or = [
+        { firstType: pokemonType },
+        { secondType: pokemonType },
+      ];
     }
 
     const pokemonList = await UserPokemon.find(userPokemonListQuery).populate({
@@ -51,19 +59,23 @@ export const getAllUsersPokemonList = async (
   next: NextFunction
 ) => {
   try {
-    const pokemonList = req.query.type
-      ? await UserPokemon.find({ types: req.query.type })
-          .populate({
-            path: "createdBy",
-            select: "username",
-          })
-          .exec()
-      : await UserPokemon.find()
-          .populate({
-            path: "createdBy",
-            select: "username",
-          })
-          .exec();
+    const getAllUsersPokemonListQuery: FilterQuery<UserPokemonData> = {};
+
+    if (req.query.type) {
+      const pokemonType = req.query.type;
+
+      getAllUsersPokemonListQuery.$or = [
+        { firstType: pokemonType },
+        { secondType: pokemonType },
+      ];
+    }
+
+    const pokemonList = await UserPokemon.find(getAllUsersPokemonListQuery)
+      .populate({
+        path: "createdBy",
+        select: "username",
+      })
+      .exec();
 
     res.status(okCode).json({ pokemon: pokemonList });
   } catch (error: unknown) {
@@ -122,24 +134,64 @@ export const createUserPokemon = async (
 
     const newUserPokemon = await UserPokemon.create({
       ...userPokemon,
-      types: [userPokemon.firstType, userPokemon.secondType],
       createdBy: new mongoose.Types.ObjectId(userId),
     });
 
     res.status(resourceCreated).json({ pokemon: newUserPokemon });
   } catch (error: unknown) {
-    const creatingPokemonError = (error as Error).message.includes("E11000")
-      ? new CustomError(
-          (error as Error).message,
-          conflict,
-          "Name already exists"
-        )
-      : new CustomError(
-          (error as Error).message,
-          internalServer,
-          "Error creating Pokémon"
-        );
-    next(creatingPokemonError);
+    const errorMessage = (error as Error).message;
+    const statusCode = errorMessage.includes("E11000")
+      ? conflict
+      : internalServer;
+    const message = errorMessage.includes("E11000")
+      ? "Name already exists"
+      : "Error editing Pokémon";
+
+    const createdUserPokemonError = new CustomError(
+      errorMessage,
+      statusCode,
+      message
+    );
+
+    next(createdUserPokemonError);
+  }
+};
+
+export const editUserPokemon = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userPokemon = req.body as UserPokemonData;
+
+    const { userPokemonId } = req.params;
+
+    const editedUserPokemon = await UserPokemon.findByIdAndUpdate(
+      userPokemonId,
+      userPokemon,
+      {
+        new: true,
+      }
+    );
+
+    res.status(okCode).json({ pokemon: editedUserPokemon });
+  } catch (error) {
+    const errorMessage = (error as Error).message;
+    const statusCode = errorMessage.includes("E11000")
+      ? conflict
+      : internalServer;
+    const message = errorMessage.includes("E11000")
+      ? "Name already exists"
+      : "Error editing Pokémon";
+
+    const editedUserPokemonError = new CustomError(
+      errorMessage,
+      statusCode,
+      message
+    );
+
+    next(editedUserPokemonError);
   }
 };
 
@@ -159,26 +211,29 @@ export const getPokemonById = async (
       );
     }
 
-    const pokemon = await UserPokemon.findById({
-      _id: pokemonId,
-    }).exec();
+    const pokemon = await UserPokemon.findById(pokemonId)
+      .populate({
+        path: "createdBy",
+        select: "username",
+      })
+      .exec();
 
     if (!pokemon) {
       throw new CustomError(
         "Pokémon not found",
         internalServer,
-        "Error finding your Pokémon"
+        "Pokémon not found"
       );
     }
 
     res.status(200).json({ pokemon });
   } catch (error: unknown) {
-    const getPokemonById = new CustomError(
+    const getPokemonByIdError = new CustomError(
       (error as Error).message,
       internalServer,
       "Error finding your Pokémon"
     );
 
-    next(getPokemonById);
+    next(getPokemonByIdError);
   }
 };

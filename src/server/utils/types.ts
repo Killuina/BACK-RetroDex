@@ -13,6 +13,7 @@ export interface Paths {
       deleteUserPokemon: string;
       createPokemon: string;
       getOnePokemon: string;
+      editPokemon: string;
     };
   };
 }

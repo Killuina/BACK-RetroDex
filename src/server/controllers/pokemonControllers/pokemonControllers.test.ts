@@ -296,6 +296,7 @@ describe("Given a getPokemonById controller", () => {
     test("Then it should call its status method with a status 200 ", async () => {
       UserPokemon.findOne = jest.fn().mockImplementationOnce(() => ({
         exec: jest.fn().mockResolvedValue(mockUserPokemon),
+        populate: jest.fn().mockReturnThis(),
       }));
 
       await getPokemonById(mockReq as Request, mockRes as Response, mockNext);
@@ -306,6 +307,7 @@ describe("Given a getPokemonById controller", () => {
     test("Then it should respond with the requested Pokémon, 'Pokamion'", async () => {
       UserPokemon.findOne = jest.fn().mockImplementationOnce(() => ({
         exec: jest.fn().mockResolvedValue(mockUserPokemon),
+        populate: jest.fn().mockReturnThis(),
       }));
 
       await getPokemonById(mockReq as Request, mockRes as Response, mockNext);
