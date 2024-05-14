@@ -5,6 +5,7 @@ import {
   getPokemonById,
   getAllUsersPokemonList,
   getUserPokemonList,
+  editUserPokemon,
 } from "../../controllers/pokemonControllers/pokemonControllers.js";
 import auth from "../../middlewares/auth/auth.js";
 import {
@@ -15,6 +16,7 @@ import {
 import { paths } from "../../utils/paths.js";
 import createUserPokemonValidation from "../../schemas/createUserPokemon.js";
 import getUserPokemonValidation from "../../schemas/getUserPokemon.js";
+import editUserPokemonValidation from "../../schemas/editUserPokemon.js";
 
 const {
   pokemon: {
@@ -23,7 +25,7 @@ const {
       createPokemon,
       getOnePokemon,
       getUserPokemon,
-      editUserPokemon,
+      editPokemon,
     },
   },
 } = paths;
@@ -52,14 +54,14 @@ pokemonRouter.post(
   createUserPokemon
 );
 
-pokemonRouter.post(
-  editUserPokemon,
+pokemonRouter.put(
+  editPokemon,
   auth,
   uploadImage,
-  createUserPokemonValidation,
+  editUserPokemonValidation,
   optimizeImage,
   backupImage,
-  createUserPokemon
+  editUserPokemon
 );
 
 export default pokemonRouter;

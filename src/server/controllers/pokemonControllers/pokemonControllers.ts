@@ -1,5 +1,5 @@
 import { type NextFunction, type Request, type Response } from "express";
-import mongoose, { type FilterQuery, type UpdateQuery } from "mongoose";
+import mongoose, { type FilterQuery } from "mongoose";
 import { CustomError } from "../../../CustomError/CustomError.js";
 import UserPokemon from "../../../database/models/UserPokemon.js";
 import {

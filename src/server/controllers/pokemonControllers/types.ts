@@ -1,5 +1,3 @@
-import type mongoose from "mongoose";
-
 export enum PokemonTypes {
   fire = "Fire",
   water = "Water",

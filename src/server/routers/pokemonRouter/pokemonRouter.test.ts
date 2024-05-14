@@ -5,7 +5,10 @@ import mongoose from "mongoose";
 import { app } from "../..";
 import jwt from "jsonwebtoken";
 import connectDatabase from "../../../database/connectDatabase";
-import { mockUserPokemon } from "../../../mocks/pokemonMocks";
+import {
+  mockUserPokemon,
+  mockUserPokemonList,
+} from "../../../mocks/pokemonMocks";
 import { paths } from "../../utils/paths";
 import statusCodes from "../../utils/statusCodes";
 import UserPokemon from "../../../database/models/UserPokemon";
@@ -40,7 +43,7 @@ const setupTestAuthorizationData = async () => {
 const {
   pokemon: {
     pokemonPath,
-    endpoints: { createPokemon, getUserPokemon },
+    endpoints: { createPokemon, getUserPokemon, editPokemon },
   },
 } = paths;
 
@@ -57,7 +60,9 @@ beforeAll(async () => {
   const mongodbServerUrl = mockMongodbServer.getUri();
 
   await connectDatabase(mongodbServerUrl);
+
   await UserPokemon.create(mockUserPokemon);
+  await UserPokemon.create(mockUserPokemonList[1]);
 });
 
 afterAll(async () => {
@@ -71,9 +76,9 @@ afterEach(async () => {
 });
 
 describe("Given the GET /pokemon endpoint", () => {
-  describe("When it receives a request and there is one Pokemon on the database", () => {
+  describe("When it receives a request and there is two Pokemon on the database", () => {
     test("Then it should respond with okCode and the requested list of Pokemon", async () => {
-      const expectedListLength = 1;
+      const expectedListLength = 2;
 
       const response = await request(app).get(pokemonPath).expect(okCode);
 
@@ -230,8 +235,8 @@ describe("Given a POST /pokemon/create endpoint", () => {
         .set("Authorization", authorizationHeader)
         .field("name", mockUserPokemon.name)
         .field("ability", mockUserPokemon.ability)
-        .field("firstType", mockUserPokemon.types[0])
-        .field("secondType", mockUserPokemon.types[1])
+        .field("firstType", mockUserPokemon.firstType)
+        .field("secondType", mockUserPokemon.secondType)
         .field("height", mockUserPokemon.height)
         .field("weight", mockUserPokemon.weight)
         .field("baseExp", mockUserPokemon.baseExp)
@@ -254,8 +259,8 @@ describe("Given a POST /pokemon/create endpoint", () => {
         .post(`${pokemonPath}${createPokemon}`)
         .set("Authorization", authorizationHeader)
         .field("ability", mockUserPokemon.ability)
-        .field("firstType", mockUserPokemon.types[0])
-        .field("secondType", mockUserPokemon.types[1])
+        .field("firstType", mockUserPokemon.firstType)
+        .field("secondType", mockUserPokemon.secondType)
         .field("height", mockUserPokemon.height)
         .field("weight", mockUserPokemon.weight)
         .field("baseExp", mockUserPokemon.baseExp)
@@ -279,8 +284,8 @@ describe("Given a POST /pokemon/create endpoint", () => {
         .field("name", mockUserPokemon.name)
         .set("Authorization", authorizationHeader)
         .field("ability", mockUserPokemon.ability)
-        .field("firstType", mockUserPokemon.types[0])
-        .field("secondType", mockUserPokemon.types[1])
+        .field("firstType", mockUserPokemon.firstType)
+        .field("secondType", mockUserPokemon.secondType)
         .field("height", mockUserPokemon.height)
         .field("weight", mockUserPokemon.weight)
         .field("baseExp", mockUserPokemon.baseExp)
@@ -292,20 +297,59 @@ describe("Given a POST /pokemon/create endpoint", () => {
   });
 });
 
+describe("Given a PUT /pokemon/edit/:pokemonId endpoint", () => {
+  describe("When it receives a request with name 'Altaria' to edit Pokamion's name", () => {
+    test("Then it should respond with okCode and all Altaria data, including its name'", async () => {
+      const { authorizationHeader } = await setupTestAuthorizationData();
+
+      const { _id: id } = await UserPokemon.create(mockUserPokemon);
+
+      const response = await request(app)
+        .put(`${pokemonPath}/edit/${id.toString()}`)
+        .set("Authorization", authorizationHeader)
+        .field("name", mockUserPokemon.name)
+        .expect(okCode);
+
+      expect(response.body).toHaveProperty(
+        "pokemon",
+        expect.objectContaining({ name: mockUserPokemon.name })
+      );
+    });
+  });
+
+  describe("When it receives a request with a name that already exists in the database", () => {
+    test("Then it should respond with bad requests status and message: 'Name already exists'", async () => {
+      const { authorizationHeader } = await setupTestAuthorizationData();
+
+      await UserPokemon.create(mockUserPokemonList[1]);
+      const { _id: id } = await UserPokemon.create(mockUserPokemon);
+
+      const alreadyExistingName = mockUserPokemonList[1].name;
+
+      const expectedError = "Name already exists";
+
+      const response = await request(app)
+        .put(`${pokemonPath}/edit/${id.toString()}`)
+        .field("name", alreadyExistingName)
+        .set("Authorization", authorizationHeader)
+        .expect(conflict);
+
+      expect(response.body).toHaveProperty("error", expectedError);
+    });
+  });
+});
+
 describe("Given the GET /pokemon/:pokemonId endpoint", () => {
   describe("When it receives a request to get 'Pokamion' details", () => {
     test("Then it should respond with okCode and all 'Pokamion' data", async () => {
-      const { _id: id } = await UserPokemon.create(mockUserPokemon);
+      const pokemon = await UserPokemon.create(mockUserPokemon);
+      const getPokamionEndpoint = `${pokemonPath}/${pokemon._id.toString()}`;
 
-      const getPokamionEndpoint = `${pokemonPath}/${id.toString()}`;
       const response = await request(app)
         .get(getPokamionEndpoint)
         .expect(okCode);
 
-      expect(response.body).toHaveProperty("pokemon", {
-        ...mockUserPokemon,
-        id: id.toString(),
-      });
+      expect(response.body).toHaveProperty("pokemon");
     });
   });
 

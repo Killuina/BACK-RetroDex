@@ -13,7 +13,8 @@ export interface UserCredentials extends UserLoginCredentials {
 export interface UserPokemonStructure {
   id: string;
   name: string;
-  types: string[];
+  firstType: string;
+  secondType: string;
   ability: string;
   height: number;
   weight: number;
